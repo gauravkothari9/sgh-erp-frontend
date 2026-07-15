@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   LayoutGrid,
@@ -56,6 +57,21 @@ const Section = ({ title, items, onNavigate }) => {
 
 export default function Sidebar({ onClose }) {
   const { user, can, isAdmin } = useAuthStore();
+  const { pathname } = useLocation();
+  const navRef = useRef(null);
+
+  // Bring the active link into view. On a phone/tablet the drawer remounts each
+  // time the hamburger is tapped and the nav resets to the top — so if the
+  // current section is far down (e.g. Kakani → Polish) you'd have to scroll to
+  // find where you are. Centre it instead, both on open and on route change.
+  useEffect(() => {
+    const el = navRef.current?.querySelector('.sidebar-link.active');
+    if (!el) return;
+    const raf = requestAnimationFrame(() =>
+      el.scrollIntoView({ block: 'center', behavior: 'auto' })
+    );
+    return () => cancelAnimationFrame(raf);
+  }, [pathname]);
 
   const officeItems = [
     { to: '/office/customers', icon: UsersIcon, label: 'Customers', module: 'customers' },
@@ -132,7 +148,7 @@ export default function Sidebar({ onClose }) {
       </div>
 
       {/* Navigation — permission-filtered */}
-      <nav className="flex-1 py-6 space-y-1 overflow-y-auto">
+      <nav ref={navRef} className="flex-1 py-6 space-y-1 overflow-y-auto">
         <NavItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" onNavigate={onClose} />
 
         <Section title="Office Module" items={officeItems} onNavigate={onClose} />

@@ -174,15 +174,15 @@ export default function ShowroomCollections() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
           {/* Branch toggle — all showrooms, or one of them */}
           {branchTabs.length > 1 && (
-            <div className="flex rounded-xl border border-linen-300 bg-white p-0.5">
+            <div className="flex rounded-xl border border-linen-300 bg-white p-0.5 self-start sm:self-auto">
               {[{ key: '', label: 'All' }, ...branchTabs.map((b) => ({ key: b, label: b }))].map((t) => (
                 <button
                   key={t.key || 'all'}
                   onClick={() => setBranch(t.key)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                     branch === t.key ? 'bg-brand-600 text-white' : 'text-gray-600 hover:text-brand-700'
                   }`}
                 >
@@ -191,7 +191,7 @@ export default function ShowroomCollections() {
               ))}
             </div>
           )}
-          <div className="relative max-w-xs w-full">
+          <div className="relative w-full sm:max-w-xs">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               value={search}

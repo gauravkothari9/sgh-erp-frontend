@@ -109,7 +109,7 @@ export default function NotificationBell() {
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 w-[min(20rem,calc(100vw-1.5rem))] bg-white shadow-card-hover border border-linen-300 z-20 rounded-lg overflow-hidden">
+          <div className="fixed left-2 right-2 top-[4.25rem] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[22rem] bg-white shadow-card-hover border border-linen-300 z-20 rounded-lg overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-linen-200 bg-linen-50">
               <span className="text-sm font-bold text-espresso-900">Notifications</span>
               {unread > 0 && (
@@ -134,8 +134,13 @@ export default function NotificationBell() {
                       <Icon size={15} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-gray-900">{n.title}</p>
-                      <p className="text-[11px] text-gray-500">{n.message}</p>
+                      <p className="text-xs font-bold text-gray-900 break-words">{n.title}</p>
+                      <p
+                        className="text-[11px] text-gray-500 break-words"
+                        style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                      >
+                        {n.message}
+                      </p>
                       <p className="text-[10px] text-gray-400 mt-0.5">{timeAgo(n.createdAt)}</p>
                     </div>
                     <span className="w-2 h-2 bg-terracotta-500 rounded-full shrink-0 mt-1" />

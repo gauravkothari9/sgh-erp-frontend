@@ -120,7 +120,7 @@ export default function Settings() {
         {/* Company */}
         <Card icon={Building2} title="Company" subtitle="Prints on local bills and invoices">
           <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="label">Trading name</label>
                 <input value={c.name || ''} onChange={(e) => setSection('company', 'name', e.target.value)} disabled={!canEdit} className="input" />
@@ -134,7 +134,7 @@ export default function Settings() {
               <label className="label">Address</label>
               <textarea rows={2} value={c.address || ''} onChange={(e) => setSection('company', 'address', e.target.value)} disabled={!canEdit} className="input" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="label">City</label>
                 <input value={c.city || ''} onChange={(e) => setSection('company', 'city', e.target.value)} disabled={!canEdit} className="input" />
@@ -149,7 +149,7 @@ export default function Settings() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="label">Phone</label>
                 <input value={c.phone || ''} onChange={(e) => setSection('company', 'phone', e.target.value)} disabled={!canEdit} className="input" />

@@ -38,7 +38,7 @@ function StockRows({ rows, onChange }) {
         {rows.map((row, idx) => {
           const zones = SHOWROOM_ZONES[row.branch] || [];
           return (
-            <div key={idx} className="flex items-center gap-2">
+            <div key={idx} className="flex flex-wrap sm:flex-nowrap items-center gap-2">
               <select
                 value={row.branch}
                 onChange={(e) => {
@@ -46,14 +46,14 @@ function StockRows({ rows, onChange }) {
                   const zone = (SHOWROOM_ZONES[branch] || [])[0] || 'A';
                   setRow(idx, { branch, zone });
                 }}
-                className="input flex-1"
+                className="input w-full sm:flex-1"
               >
                 {SHOWROOM_BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
               </select>
               <select
                 value={row.zone}
                 onChange={(e) => setRow(idx, { zone: e.target.value })}
-                className="input w-28"
+                className="input flex-1 sm:flex-none sm:w-28"
               >
                 {zones.map((z) => <option key={z} value={z}>Zone {z}</option>)}
               </select>
@@ -63,7 +63,7 @@ function StockRows({ rows, onChange }) {
                 value={row.qty}
                 onChange={(e) => setRow(idx, { qty: e.target.value })}
                 placeholder="Qty"
-                className="input w-24"
+                className="input w-20 sm:w-24"
               />
               <button
                 onClick={() => dropRow(idx)}
@@ -222,7 +222,7 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="label">SKU</label>
             <input
@@ -232,7 +232,7 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
               className="input uppercase"
             />
           </div>
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="label label-required">Product name</label>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Reclaimed Wood Cabinet" className="input" autoFocus />
           </div>
@@ -254,7 +254,7 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
 
         <div>
           <label className="label">Dimensions</label>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {['length', 'width', 'height'].map((key) => (
               <div key={key}>
                 <input

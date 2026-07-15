@@ -64,7 +64,7 @@ export function LocalCustomerModal({ isOpen, onClose, customer, onSaved }) {
       }
     >
       <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="label label-required">Name</label>
             <input value={form.name} onChange={set('name')} className="input" autoFocus />
@@ -87,7 +87,7 @@ export function LocalCustomerModal({ isOpen, onClose, customer, onSaved }) {
           <label className="label">Address</label>
           <textarea value={form.address} onChange={set('address')} rows={2} className="input" />
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="label">City</label>
             <input value={form.city} onChange={set('city')} className="input" />
@@ -107,7 +107,7 @@ export function LocalCustomerModal({ isOpen, onClose, customer, onSaved }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="label">Tags</label>
             <input value={form.tags} onChange={set('tags')} className="input" placeholder="VIP, Dealer, Architect" />
