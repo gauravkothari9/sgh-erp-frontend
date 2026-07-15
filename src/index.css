@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  /* Slightly larger base — scales all rem-based sizing up (16px → 18px). */
+  html {
+    font-size: 18px;
+  }
+
+  body {
+    @apply bg-linen-100 text-espresso-800 font-sans antialiased selection:bg-terracotta-200 selection:text-terracotta-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium text-espresso-900 tracking-tight;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-espresso-200 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-espresso-300;
+  }
+}
+
+@layer components {
+  /* Card */
+  .card {
+    @apply bg-white rounded-none shadow-card border border-linen-300 p-4 sm:p-6 transition-all duration-300 hover:shadow-card-hover;
+  }
+
+  /* Form inputs */
+  .input {
+    @apply w-full px-0 py-2.5 rounded-none border-b border-linen-400 text-sm
+           bg-transparent text-espresso-900 placeholder-espresso-300
+           focus:outline-none focus:border-terracotta-500 focus:ring-0
+           transition-all duration-300;
+  }
+
+  .input-error {
+    @apply border-terracotta-600 focus:border-terracotta-600;
+  }
+
+  .label {
+    @apply block text-xs font-medium text-espresso-500 mb-1 tracking-wider uppercase;
+  }
+
+  .label-required::after {
+    content: ' *';
+    @apply text-terracotta-500;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-3.5 sm:px-5 py-2.5 rounded-none text-sm font-medium
+           transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed tracking-wide
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-linen-100;
+  }
+
+  .btn-primary {
+    @apply btn bg-terracotta-600 text-white hover:bg-terracotta-700 focus:ring-terracotta-600 active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply btn bg-transparent text-espresso-800 border border-espresso-800 hover:bg-espresso-800 hover:text-white
+           focus:ring-espresso-800 active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply btn bg-transparent text-terracotta-700 border border-terracotta-700 hover:bg-terracotta-700 hover:text-white focus:ring-terracotta-700 active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply btn text-espresso-600 hover:bg-linen-200 hover:text-espresso-900 focus:ring-linen-300;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  /* Table */
+  .table-container {
+    @apply overflow-x-auto border-t border-b border-linen-300;
+  }
+
+  table.sgh-table {
+    @apply w-full text-sm text-left;
+  }
+
+  table.sgh-table thead {
+    @apply border-b border-espresso-900;
+  }
+
+  table.sgh-table th {
+    @apply px-4 py-4 text-xs font-semibold text-espresso-900 uppercase tracking-widest bg-linen-50;
+  }
+
+  table.sgh-table td {
+    @apply px-4 py-4 text-espresso-800 border-b border-linen-200 font-light;
+  }
+
+  table.sgh-table tbody tr {
+    @apply hover:bg-linen-50 transition-colors duration-300;
+  }
+
+  /* Page header */
+  /* Stacks on phones, sits on one row from `sm` up. */
+  .page-header {
+    @apply flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between
+           mb-6 sm:mb-10 pb-4 sm:pb-6 border-b border-linen-300;
+  }
+
+  .page-title {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-serif text-espresso-900 leading-tight sm:leading-none;
+  }
+
+  .page-subtitle {
+    @apply text-sm text-espresso-500 mt-2 font-light tracking-wide;
+  }
+
+  /* Sidebar */
+  .sidebar-link {
+    @apply flex items-center gap-4 px-4 py-3 text-sm font-medium
+           text-espresso-500 hover:text-espresso-900 hover:bg-linen-200
+           transition-all duration-300 cursor-pointer relative;
+  }
+
+  .sidebar-link.active {
+    @apply text-espresso-900 bg-transparent;
+  }
+
+  .sidebar-link.active::before {
+    content: '';
+    @apply absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-terracotta-600;
+  }
+
+  /* Section divider */
+  .section-divider {
+    @apply h-px bg-linen-300 my-8;
+  }
+}
+
+/* Loading animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Delay classes for staggered animations */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+
+/* Print styles for PDF */
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}
+
