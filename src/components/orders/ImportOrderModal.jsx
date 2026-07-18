@@ -4,6 +4,7 @@ import {
   AlertCircle, CheckCircle, X, Loader2,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import Modal from '../common/Modal';
 import PhotoPicker from '../common/PhotoPicker';
 import { orderAPI, customerAPI } from '../../utils/api';
@@ -19,6 +20,7 @@ import { compressImage } from '../../utils/compressImage';
 // into the closest identifier field so the row still imports.
 const COLUMN_ALIASES = {
   companySKU: [
+    'item code', 'item_code', 'itemcode',
     'company sku', 'company_sku', 'sku', 'internal sku',
     'sk code', 'go code', 'g.o code',
     'art no', 'art. no.', 'art. no', 'article no', 'article number',
@@ -85,6 +87,11 @@ const COLUMN_ALIASES = {
   // photos can be matched by an explicit filename in addition to by SKU.
   imageRef: ['image', 'images', 'picture', 'photo', 'photos', 'image name', 'photo name'],
 };
+
+// Max files per upload request. Must stay at or below the server's
+// `uploadImage.array('images', N)` cap in backend/routes/orderRoutes.js —
+// exceeding it makes multer reject the whole request.
+const UPLOAD_BATCH = 20;
 
 // Normalize a header cell to a lookup key.
 const normKey = (s) => String(s || '').toLowerCase().trim().replace(/\s+/g, ' ');
@@ -205,79 +212,174 @@ const calcCBM = (dims) => {
   return Math.round(l * w * h * 1000) / 1000;
 };
 
+// ── Two-row header support ───────────────────────────────────────────────────
+// The SGH template groups the three dimension columns under one merged "Size"
+// heading, so the real column names for those live on row 2:
+//
+//   │ Item Code │ Description │   Size (cm)   │ Qty │ Image │ Comment │  ← row 1
+//   │           │             │  L  │  W │ H  │     │       │         │  ← row 2
+//
+// Buyer sheets use a plain single-row header, so we sniff for the L/W/H
+// sub-header and only take the two-row path when it is actually there.
+const SUBHEADER_TOKENS = new Set([
+  'l', 'w', 'h', 'd',
+  'length', 'width', 'height', 'depth',
+]);
+
+const looksLikeSubHeader = (row = []) =>
+  row.filter((c) => SUBHEADER_TOKENS.has(normKey(c))).length >= 2;
+
+// Flatten a two-row header into one name per column: the sub-header wins where
+// present, otherwise the group heading, forward-filled across its merge.
+const flattenHeader = (top = [], sub = [], width = 0) => {
+  const out = [];
+  let carry = '';
+  for (let c = 0; c < width; c++) {
+    const t = String(top[c] ?? '').trim();
+    if (t) carry = t;
+    const s = String(sub[c] ?? '').trim();
+    out.push(s || carry);
+  }
+  return out;
+};
+
+// Parse a worksheet into header-keyed row objects, handling both layouts.
+// Also returns the flattened header list and how many rows it occupied — the
+// image extractor needs both to turn a drawing's anchor into a data-row index.
+const sheetToRows = (sheet) => {
+  const aoa = XLSX.utils.sheet_to_json(sheet, {
+    header: 1, defval: '', blankrows: false,
+  });
+  if (!aoa.length) return { rows: [], headers: [], headerRows: 0 };
+  // Single-row header — unchanged behaviour for buyer-supplied sheets.
+  if (!looksLikeSubHeader(aoa[1])) {
+    return {
+      rows: XLSX.utils.sheet_to_json(sheet, { defval: '' }),
+      headers: aoa[0].map((h) => String(h ?? '').trim()),
+      headerRows: 1,
+    };
+  }
+  const width = Math.max(aoa[0].length, aoa[1].length);
+  const headers = flattenHeader(aoa[0], aoa[1], width);
+  const rows = aoa.slice(2).map((r) => {
+    const obj = {};
+    headers.forEach((h, c) => {
+      if (h) obj[h] = r[c] ?? '';
+    });
+    return obj;
+  });
+  return { rows, headers, headerRows: 2 };
+};
+
+// Find the column index whose header matches one of a field's aliases.
+const columnIndexFor = (headers, field) => {
+  const aliases = new Set(COLUMN_ALIASES[field]);
+  return headers.findIndex((h) => aliases.has(normKey(h)));
+};
+
+// ── Embedded photos ──────────────────────────────────────────────────────────
+// Buyers and the office both paste pictures straight into the sheet rather than
+// sending a separate photo folder, so the Excel file IS the photo source.
+// SheetJS cannot see embedded media at all, but ExcelJS exposes floating
+// drawings and their anchors — so we do a second, media-only pass over the same
+// buffer and map each drawing to a data row by its top-left anchor.
+//
+// Routing by the column the drawing sits over:
+//   • Comment column  → comment photo
+//   • anything else   → product photo (the item gallery)
+// The fallback is deliberately greedy: sheets float product pictures over a
+// dedicated Image column, over the SKU, or loosely across the row, and in every
+// one of those cases the picture is the product.
+//
+// Degrades to "no embedded images" rather than failing when:
+//   • the file is a legacy .xls — ExcelJS reads .xlsx only
+//   • pictures were inserted with Excel 365's "Place in Cell", which stores
+//     them as rich-value cells instead of drawings, invisible to ExcelJS
+const extractEmbeddedImages = async (buf, headerRows, cols) => {
+  const byRow = new Map();
+  const stats = { drawings: 0, item: 0, comment: 0, failed: false };
+  const bucketFor = (row) =>
+    byRow.get(row) || { item: [], comment: [] };
+
+  try {
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.load(buf);
+    const ws = wb.worksheets[0];
+    if (!ws) return { byRow, stats };
+
+    const drawings = ws.getImages() || [];
+    stats.drawings = drawings.length;
+
+    for (const drawing of drawings) {
+      const tl = drawing?.range?.tl;
+      if (!tl) continue;
+      // Anchors are 0-based and fractional (the offset within the cell).
+      const dataRow = Math.floor(tl.row) - headerRows;
+      if (dataRow < 0) continue;
+
+      const media = wb.getImage(drawing.imageId);
+      if (!media?.buffer) continue;
+
+      const kind = Math.floor(tl.col) === cols.comment ? 'comment' : 'item';
+      const ext = (media.extension || 'png').toLowerCase();
+      const bucket = bucketFor(dataRow);
+      const seq = bucket[kind].length + 1;
+      const file = new File(
+        [media.buffer],
+        `${kind}-${dataRow + 1}-${String(seq).padStart(2, '0')}.${ext}`,
+        { type: `image/${ext === 'jpg' ? 'jpeg' : ext}` }
+      );
+      bucket[kind].push(file);
+      byRow.set(dataRow, bucket);
+      stats[kind] += 1;
+    }
+  } catch (err) {
+    // Cell data still imports — only the embedded photos are lost.
+    stats.failed = true;
+    console.warn('Embedded images could not be read', err);
+  }
+  return { byRow, stats };
+};
+
 // Build the Excel template workbook and trigger a download.
 //
-// Headings cover every per-item field the parser recognises. Width hints for
-// long-text columns; an example row shows the expected shape for materials
-// (comma-separated), conditions (enum), and multi-line notes.
+// Deliberately minimal — only the six fields the office actually fills in by
+// hand. Everything else the item schema supports (materials, HSN, price,
+// barcode, factory notes) is still recognised on import via COLUMN_ALIASES
+// when a buyer's own sheet carries it; it just isn't asked for here.
 export const downloadOrderTemplate = () => {
-  const headers = [
-    // Identification
-    'Company SKU', 'Buyer SKU',
-    // Description
-    'Item Description', 'Buyer Description',
-    'Category', 'Collection',
-    'Materials', 'Finishes',
-    'Condition', 'HSN Code',
-    // Physical
-    'Length', 'Width', 'Height', 'Unit',
-    'CBM', 'Weight (kg)',
-    // Pricing
-    'Quantity', 'Unit Price',
-    // Identifiers
-    'Barcode',
-    // Factory notes
-    'Production Notes', 'QC Notes', 'Polish Notes', 'Packaging Notes',
-    // Free-form
-    'Comments',
-  ];
+  // Row 1 groups L / W / H under one merged "Size" heading; row 2 carries the
+  // per-axis sub-headers. Every other column is merged vertically across both
+  // rows so it reads as a single cell.
+  const top = ['Item Code', 'Description', 'Size (cm)', '', '', 'Qty', 'Image', 'Comment'];
+  const sub = ['', '', 'L', 'W', 'H', '', '', ''];
   const example = [
-    'SGH-CAB-001', 'BUYER-CAB-A1',
-    'Reclaimed Wood Cabinet', '',
-    'Cabinet', 'Revive',
-    'Reclaimed Wood, Iron', 'Natural, Distressed',
-    'Production', '94036090',
-    120, 45, 90, 'cm',
-    0, 0,
-    10, 250,
-    '8901234567890',
-    '', '', '', '',
-    '',
-  ];
-  // A second helper row that documents what each column accepts. Operators
-  // can delete it after they understand the format.
-  const hint = [
-    'Required',           'Optional — buyer\'s own SKU',
-    'Short description', 'Optional — what the buyer calls it',
-    'e.g. Cabinet',     'e.g. Revive',
-    'Comma-separated',  'Comma-separated',
-    'One of Kind | Production', 'e.g. 94036090',
-    'Number',           'Number',           'Number', 'cm | inch',
-    'Auto if blank',    'kg',
-    'Min 1',            'Number',
-    'Optional',
-    'Free text',        'Free text',        'Free text', 'Free text',
-    'Free text — added as one comment per row',
+    'SGH-CAB-001',
+    'Reclaimed Wood Cabinet',
+    120, 45, 90,
+    10,
+    'SGH-CAB-001.jpg',
+    'Natural finish, no wax',
   ];
 
-  const ws = XLSX.utils.aoa_to_sheet([headers, example, hint]);
-  // Per-column widths — longer headings get more room; notes/comments wider.
-  const widthFor = (h) => {
-    const low = h.toLowerCase();
-    if (low.includes('description') || low.includes('comment')) return 36;
-    if (low.includes('notes')) return 28;
-    if (low.includes('material') || low.includes('finishes')) return 22;
-    if (low === 'unit' || low === 'qty' || low === 'cbm') return 8;
-    if (low === 'length' || low === 'width' || low === 'height' || low === 'weight (kg)' || low === 'quantity') return 10;
-    if (low.includes('price')) return 12;
-    if (low.includes('sku') || low.includes('barcode') || low.includes('hsn')) return 18;
-    return Math.max(h.length + 2, 14);
-  };
-  ws['!cols'] = headers.map((h) => ({ wch: widthFor(h) }));
-  // Make the example/hint rows visually distinct so users don't ship them
-  // as data: hint row hidden behind italic notation only — actual styling
-  // requires xlsx-js-style; the plain xlsx writer just keeps the text.
-  ws['!rows'] = [{ hpt: 22 }, { hpt: 18 }, { hpt: 18 }];
+  const ws = XLSX.utils.aoa_to_sheet([top, sub, example]);
+  ws['!merges'] = [
+    { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } }, // Item Code
+    { s: { r: 0, c: 1 }, e: { r: 1, c: 1 } }, // Description
+    { s: { r: 0, c: 2 }, e: { r: 0, c: 4 } }, // Size — spans L, W, H
+    { s: { r: 0, c: 5 }, e: { r: 1, c: 5 } }, // Qty
+    { s: { r: 0, c: 6 }, e: { r: 1, c: 6 } }, // Image
+    { s: { r: 0, c: 7 }, e: { r: 1, c: 7 } }, // Comment
+  ];
+  ws['!cols'] = [
+    { wch: 18 }, // Item Code
+    { wch: 40 }, // Description
+    { wch: 8 }, { wch: 8 }, { wch: 8 }, // L / W / H
+    { wch: 8 },  // Qty
+    { wch: 24 }, // Image
+    { wch: 36 }, // Comment
+  ];
+  ws['!rows'] = [{ hpt: 22 }, { hpt: 18 }];
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Order Items');
@@ -290,6 +392,12 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
   const [photoFiles, setPhotoFiles] = useState([]); // File[]
   const [importing, setImporting] = useState(false);
   const [parseError, setParseError] = useState('');
+  // How many pictures we pulled out of the workbook — surfaced so the operator
+  // can tell "the sheet had none" from "we couldn't read them".
+  const [imageStats, setImageStats] = useState(null);
+  // Photo uploads go out in batches; surface which batch we're on so a large
+  // import doesn't look frozen.
+  const [uploadProgress, setUploadProgress] = useState(null);
 
   const resetState = () => {
     setExcelFile(null);
@@ -297,6 +405,8 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
     setPhotoFiles([]);
     setImporting(false);
     setParseError('');
+    setImageStats(null);
+    setUploadProgress(null);
   };
 
   const handleClose = () => {
@@ -314,18 +424,28 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
       const wb = XLSX.read(buf, { type: 'array' });
       const sheetName = wb.SheetNames[0];
       const sheet = wb.Sheets[sheetName];
-      const raw = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      const { rows: raw, headers, headerRows } = sheetToRows(sheet);
       if (!raw.length) {
         setParseError('The Excel sheet contains no rows.');
         setExcelRows([]);
         return;
       }
-      const items = raw.map(rowToItem).filter(
-        (r) => r.buyerSKU || r.companySKU || r.itemDescription
+      // Pictures pasted into the sheet, keyed by source-row index. Attach
+      // BEFORE filtering, since filtering renumbers the rows.
+      const { byRow: embedded, stats } = await extractEmbeddedImages(
+        buf, headerRows, { comment: columnIndexFor(headers, 'comments') }
       );
+      setImageStats(stats);
+      const items = raw
+        .map((r, i) => ({
+          ...rowToItem(r),
+          _embeddedImages: embedded.get(i)?.item || [],
+          _commentImages: embedded.get(i)?.comment || [],
+        }))
+        .filter((r) => r.buyerSKU || r.companySKU || r.itemDescription);
       if (!items.length) {
         setParseError(
-          'No usable rows found. Make sure the sheet has a "Buyer SKU" (or Company SKU) column.'
+          'No usable rows found. Make sure the sheet has an "Item Code" (or Buyer SKU) column.'
         );
         setExcelRows([]);
         return;
@@ -369,7 +489,16 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
   }, [photoMatches, photoFiles]);
 
   const totalItems = excelRows.length;
-  const matchedItems = photoMatches.filter((m) => m.matched.length > 0).length;
+  // A row counts as "has a photo" whether it came from the workbook or a file.
+  const matchedItems = photoMatches.filter(
+    (m) => m.matched.length > 0 || (m.row._embeddedImages?.length || 0) > 0
+  ).length;
+  const commentPhotos = excelRows.reduce(
+    (s, r) => s + (r._commentImages?.length || 0), 0
+  );
+  const embeddedPhotos = excelRows.reduce(
+    (s, r) => s + (r._embeddedImages?.length || 0), 0
+  );
 
   const handleImport = async () => {
     if (excelRows.length === 0) {
@@ -389,30 +518,73 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
       // 2. Rename files to "<Buyer SKU><ext>" in memory so when the backend
       //    stores them on disk the filename already reflects the SKU.
       //    (The backend auto-rename helper will further normalize later.)
+      //    Comment photos embedded in the sheet ride along in the same batch,
+      //    tagged `kind: 'comment'` so they land on the comment instead of the
+      //    item gallery.
       const uploadList = [];
       photoMatches.forEach(({ row, matched }, rowIdx) => {
+        const baseName = row.buyerSKU || row.companySKU || `item-${rowIdx + 1}`;
+        // Pictures lifted out of the workbook lead the gallery — they came in
+        // with the row, so they are the more authoritative product shot.
+        (row._embeddedImages || []).forEach((f, i) => {
+          const ext = (f.name.match(/\.[^.]+$/) || [''])[0];
+          uploadList.push({
+            rowIdx,
+            kind: 'item',
+            file: new File(
+              [f],
+              `${baseName}_${String(i + 1).padStart(2, '0')}${ext}`,
+              { type: f.type }
+            ),
+          });
+        });
+        // Loose files continue the numbering so they never collide with the
+        // embedded ones above.
+        const embeddedCount = (row._embeddedImages || []).length;
         matched.forEach((f, photoIdx) => {
           const ext = (f.name.match(/\.[^.]+$/) || [''])[0];
-          const baseName = row.buyerSKU || row.companySKU || `item-${rowIdx + 1}`;
-          const newName = matched.length > 1
-            ? `${baseName}_${String(photoIdx + 1).padStart(2, '0')}${ext}`
+          const n = embeddedCount + photoIdx + 1;
+          const newName = matched.length + embeddedCount > 1
+            ? `${baseName}_${String(n).padStart(2, '0')}${ext}`
             : `${baseName}${ext}`;
-          uploadList.push({ rowIdx, file: new File([f], newName, { type: f.type }) });
+          uploadList.push({
+            rowIdx, kind: 'item', file: new File([f], newName, { type: f.type }),
+          });
+        });
+        (row._commentImages || []).forEach((f, i) => {
+          const ext = (f.name.match(/\.[^.]+$/) || [''])[0];
+          uploadList.push({
+            rowIdx,
+            kind: 'comment',
+            file: new File(
+              [f],
+              `${baseName}_comment_${String(i + 1).padStart(2, '0')}${ext}`,
+              { type: f.type }
+            ),
+          });
         });
       });
 
       // 3. Upload all photos in one batch call. The backend returns URLs in
       //    the SAME order we posted them, so we can map them back to rows.
       //    Compress each in the browser first so the network leg is cheap.
+      //    The endpoint accepts at most UPLOAD_BATCH files per request, so we
+      //    post in batches and concatenate — an order can easily carry a photo
+      //    per row, well past any single-request cap.
       let uploadedUrls = [];
       if (uploadList.length > 0) {
         const compressedList = await Promise.all(
           uploadList.map(async ({ file }) => compressImage(file))
         );
-        const fd = new FormData();
-        compressedList.forEach((file) => fd.append('images', file));
-        const up = await orderAPI.uploadMedia(fd);
-        uploadedUrls = up?.data?.data?.urls || [];
+        for (let i = 0; i < compressedList.length; i += UPLOAD_BATCH) {
+          const batch = compressedList.slice(i, i + UPLOAD_BATCH);
+          setUploadProgress({ done: i, total: compressedList.length });
+          const fd = new FormData();
+          batch.forEach((file) => fd.append('images', file));
+          const up = await orderAPI.uploadMedia(fd);
+          uploadedUrls.push(...(up?.data?.data?.urls || []));
+        }
+        setUploadProgress(null);
         if (uploadedUrls.length !== uploadList.length) {
           console.warn(
             'Upload count mismatch',
@@ -426,14 +598,25 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
 
       // 4. Attach uploaded URLs back to their row items.
       const items = excelRows.map((row, idx) => {
-        const urls = uploadList
-          .map((u, i) => (u.rowIdx === idx ? uploadedUrls[i] : null))
+        const urlsOfKind = (kind) => uploadList
+          .map((u, i) => (u.rowIdx === idx && u.kind === kind ? uploadedUrls[i] : null))
           .filter(Boolean);
+        const urls = urlsOfKind('item');
+        const commentUrls = urlsOfKind('comment');
         const cbm = row.cbm || calcCBM(row.dimensions);
-        // Drop the parse-only helper so it never reaches the API.
-        const { _imageRef, ...clean } = row;
+        // Drop the parse-only helpers so they never reach the API.
+        const { _imageRef, _commentImages, _embeddedImages, ...clean } = row;
+        // A comment can carry text, photos, or both. When the cell had text we
+        // hang the photos on that comment; a photo-only cell still produces a
+        // comment record (commentSchema.text is optional).
+        const comments = commentUrls.length === 0
+          ? clean.comments
+          : clean.comments.length
+            ? clean.comments.map((c, ci) => (ci === 0 ? { ...c, images: commentUrls } : c))
+            : [{ text: '', images: commentUrls }];
         return {
           ...clean,
+          comments,
           cbm,
           totalCBM: cbm * (row.quantity || 1),
           totalPrice: (row.quantity || 0) * (row.unitPrice || 0),
@@ -495,7 +678,11 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
             className="btn-primary btn"
           >
             {importing ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
-            {importing ? 'Creating order…' : `Create Order${totalItems ? ` (${totalItems})` : ''}`}
+            {!importing
+              ? `Create Order${totalItems ? ` (${totalItems})` : ''}`
+              : uploadProgress
+                ? `Uploading photos ${uploadProgress.done}/${uploadProgress.total}…`
+                : 'Creating order…'}
           </button>
         </>
       }
@@ -603,12 +790,46 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
           </div>
         )}
 
+        {/* The sheet parsed but we found no pictures in it. Almost always one
+            of two causes, and the operator can fix both — so name them. */}
+        {excelRows.length > 0 && imageStats && imageStats.drawings === 0 && (
+          <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3 rounded-lg">
+            <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold mb-1">
+                No pictures were found inside this Excel file.
+              </p>
+              {imageStats.failed ? (
+                <p>
+                  The file could not be opened for images — this happens with the
+                  older <span className="font-mono">.xls</span> format. Re-save it
+                  as <span className="font-mono">.xlsx</span> from Excel
+                  (File → Save As → Excel Workbook) and upload again.
+                </p>
+              ) : (
+                <p>
+                  If the sheet does show pictures, they were most likely added
+                  with <strong>Place in Cell</strong>. Right-click a picture and
+                  choose <strong>Cut</strong>, then paste it back with plain{' '}
+                  <span className="font-mono">Ctrl+V</span> so it floats over the
+                  cell — that format can be read.
+                </p>
+              )}
+              <p className="mt-1 opacity-80">
+                You can still import now and add photos with the picker on the right.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Preview table */}
         {excelRows.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                Preview ({totalItems} items · {matchedItems} with photo)
+                Preview ({totalItems} items · {matchedItems} with photo
+                {embeddedPhotos > 0 && ` · ${embeddedPhotos} from Excel`}
+                {commentPhotos > 0 && ` · ${commentPhotos} comment photo${commentPhotos > 1 ? 's' : ''}`})
               </h3>
               {photoFiles.length > 0 && (
                 <button
@@ -630,6 +851,7 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                       <th className="px-2 py-2 text-left">Company SKU</th>
                       <th className="px-2 py-2 text-left">Buyer SKU</th>
                       <th className="px-2 py-2 text-left">Description</th>
+                      <th className="px-2 py-2 text-left">Comment</th>
                       <th className="px-2 py-2 text-left">Materials</th>
                       <th className="px-2 py-2 text-left">Finishes</th>
                       <th className="px-2 py-2 text-left">HSN</th>
@@ -650,21 +872,27 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                           : '—';
                       const cbm = row.cbm || calcCBM(d);
                       const lineTotal = (row.quantity || 0) * (row.unitPrice || 0);
+                      // Workbook pictures lead, then any matched loose files.
+                      const gallery = [...(row._embeddedImages || []), ...matched];
+                      const fromSheet = (row._embeddedImages?.length || 0) > 0;
                       return (
                         <tr key={idx} className="hover:bg-gray-50/60">
                           <td className="px-2 py-2 text-gray-400">{idx + 1}</td>
                           <td className="px-2 py-2">
                             <div className="flex items-center justify-center">
-                              {matched.length > 0 ? (
+                              {gallery.length > 0 ? (
                                 <div className="relative">
                                   <img
-                                    src={URL.createObjectURL(matched[0])}
+                                    src={URL.createObjectURL(gallery[0])}
                                     alt={row.buyerSKU || row.companySKU || ''}
-                                    className="w-10 h-10 rounded object-cover border border-gray-200"
+                                    className={`w-10 h-10 rounded object-cover border ${
+                                      fromSheet ? 'border-brand-400' : 'border-gray-200'
+                                    }`}
+                                    title={fromSheet ? 'From the Excel file' : 'From uploaded photos'}
                                   />
-                                  {matched.length > 1 && (
+                                  {gallery.length > 1 && (
                                     <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-green-600 text-white rounded-full px-1 min-w-[14px] text-center">
-                                      {matched.length}
+                                      {gallery.length}
                                     </span>
                                   )}
                                 </div>
@@ -683,6 +911,23 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                           </td>
                           <td className="px-2 py-2 text-gray-700 truncate max-w-[180px]">
                             {row.itemDescription || '—'}
+                          </td>
+                          {/* Text and any photo pasted into the same cell. */}
+                          <td className="px-2 py-2 text-gray-600 max-w-[200px]">
+                            <div className="flex items-center gap-1.5">
+                              {row._commentImages?.map((f, i) => (
+                                <img
+                                  key={i}
+                                  src={URL.createObjectURL(f)}
+                                  alt=""
+                                  className="w-8 h-8 rounded object-cover border border-brand-200 flex-shrink-0"
+                                />
+                              ))}
+                              <span className="truncate">
+                                {row.comments?.[0]?.text ||
+                                  (row._commentImages?.length ? '' : '—')}
+                              </span>
+                            </div>
                           </td>
                           <td className="px-2 py-2 text-gray-600 truncate max-w-[120px]">
                             {row.materials?.length ? row.materials.join(', ') : '—'}
@@ -714,7 +959,7 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                   {/* Totals row — quick sanity check for the operator. */}
                   <tfoot className="bg-gray-50 sticky bottom-0 text-[11px] font-semibold text-gray-700">
                     <tr>
-                      <td className="px-2 py-2" colSpan={11}>Totals</td>
+                      <td className="px-2 py-2" colSpan={12}>Totals</td>
                       <td className="px-2 py-2 text-right tabular-nums">
                         {excelRows.reduce((s, r) => s + (r.quantity || 0), 0)}
                       </td>
