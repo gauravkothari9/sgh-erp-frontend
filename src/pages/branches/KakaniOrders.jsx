@@ -11,7 +11,11 @@ export default function KakaniOrders() {
       icon={Factory}
       filters={{ branch: 'Kakani' }}
       mode="overview"
-      emptyText="No items routed to Kakani yet."
+      // An order drops off this list the moment all of its Kakani items are at
+      // Ready for Container — nothing is left to do here, and Container takes
+      // over from that point.
+      hideReadyOrders
+      emptyText="No items routed to Kakani yet — orders leave this list once every piece is Ready for Container."
     />
   );
 }

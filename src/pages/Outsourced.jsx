@@ -66,14 +66,15 @@ export default function Outsourced() {
   return (
     <StageView
       title="Outsourced"
-      subtitle="Items with external suppliers — move them into a Kakani stage when they arrive"
+      subtitle="Items with external suppliers — move them on one stage at a time as they arrive"
       icon={Share2}
       // Only pieces still at the supplier (awaiting sample / just received) show
       // here. Once moved into a production stage they leave this section and
       // appear in the matching Kakani stage view.
       filters={{ sourcing: 'Outsourced', stage: 'Sample Provided,Received' }}
-      // Single "Move" action → pick which Kakani stage the arrived goods go to.
-      moveToStages={['Polish', 'QC', 'Packing', 'Ready for Container']}
+      // Stages can't be skipped, so arrived goods step along the outsourced
+      // route: Sample Provided → Received → Polish → QC → Packing → Ready.
+      advance
       renderExtra={(card) => <OutsourceExtra key={card.itemId} card={card} />}
       emptyText="No outsourced items awaiting a supplier."
     />

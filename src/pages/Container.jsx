@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Container as ContainerIcon, Search, Loader2, Folder, CheckCircle2,
-  ArrowLeft, ChevronRight, Package,
+  ArrowLeft, ChevronRight, Package, Trash2, AlertTriangle,
 } from 'lucide-react';
-import { containerAPI } from '../utils/api';
+import { containerAPI, orderAPI } from '../utils/api';
 import { useAuthStore } from '../store/authStore';
 import { useDebounce } from '../hooks/useDebounce';
 import { resolveMediaSrc, imgErrorFallback, formatDate } from '../utils/formatters';
+import Modal from '../components/common/Modal';
 import toast from 'react-hot-toast';
 
 // Reusable progress bar.
@@ -14,6 +15,30 @@ const Bar = ({ percent, complete }) => (
   <div className="flex-1 h-2 rounded-full bg-linen-200 overflow-hidden">
     <div className={`h-full rounded-full transition-all ${complete ? 'bg-emerald-500' : 'bg-brand-500'}`} style={{ width: `${percent}%` }} />
   </div>
+);
+
+// Container paperwork — size / number, shown wherever a file or order is listed.
+const ContainerTags = ({ size, number, sizes, numbers }) => {
+  const allSizes = sizes?.length ? sizes : [size].filter(Boolean);
+  const allNumbers = numbers?.length ? numbers : [number].filter(Boolean);
+  if (!allSizes.length && !allNumbers.length) return null;
+  return (
+    <span className="flex flex-wrap items-center gap-1">
+      {allSizes.map((s) => (
+        <span key={s} className="text-[11px] font-bold bg-brand-50 text-brand-800 border border-brand-200 px-1.5 py-0.5 rounded whitespace-nowrap">{s}</span>
+      ))}
+      {allNumbers.map((n) => (
+        <span key={n} className="text-[11px] font-mono bg-gray-50 text-gray-600 border border-gray-200 px-1.5 py-0.5 rounded whitespace-nowrap">{n}</span>
+      ))}
+    </span>
+  );
+};
+
+// "Completed" badge for an order that has been closed out but deliberately kept.
+const CompletedBadge = () => (
+  <span className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full whitespace-nowrap">
+    <CheckCircle2 size={13} /> Completed
+  </span>
 );
 
 // Container completion tracker — a 3-level drill-down, each on its own screen:
@@ -30,18 +55,52 @@ export default function Container() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [openOrder, setOpenOrder] = useState(null);  // order object (its own screen)
   const [completing, setCompleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null); // order to delete
+  const [deleting, setDeleting] = useState(false);
   const canComplete = useAuthStore((s) => s.can)('orders', 'update');
+  const canDelete = useAuthStore((s) => s.can)('orders', 'delete');
 
+  // Re-read the open file and, if we're on an order screen, re-point at the same
+  // order so its badges/progress refresh in place.
+  const refreshFile = async (fileNumber, keepOrderId) => {
+    const res = await containerAPI.getFile(fileNumber);
+    const data = res.data?.data || null;
+    setDetail(data);
+    if (keepOrderId) {
+      const same = (data?.orders || []).find((o) => String(o.orderId) === String(keepOrderId));
+      setOpenOrder(same || null);
+    }
+    return data;
+  };
+
+  // Completed orders STAY on this screen — the office keeps the record and
+  // removes it by hand later. So refresh in place instead of navigating away.
   const markComplete = async () => {
     setCompleting(true);
     try {
       await containerAPI.completeOrder(openOrder.orderId);
       toast.success(`${openOrder.orderNumber} marked completed`);
-      const fn = openFile;
-      setOpenOrder(null);
-      const res = await containerAPI.getFile(fn); // refresh — completed order drops off
-      setDetail(res.data?.data || null);
+      await refreshFile(openFile, openOrder.orderId);
     } catch { /* toasted */ } finally { setCompleting(false); }
+  };
+
+  // Manual, permanent removal — the only thing that takes an order off Container.
+  const deleteOrder = async () => {
+    const target = confirmDelete;
+    setDeleting(true);
+    try {
+      await orderAPI.delete(target.orderId);
+      toast.success(`${target.orderNumber} deleted`);
+      setConfirmDelete(null);
+      const wasOpen = openOrder && String(openOrder.orderId) === String(target.orderId);
+      if (wasOpen) setOpenOrder(null);
+      const data = await refreshFile(openFile, wasOpen ? null : openOrder?.orderId);
+      // Nothing left in the file — drop back to the file list.
+      if (!(data?.orders || []).length) {
+        setOpenFile(null);
+        setDetail(null);
+      }
+    } catch { /* toasted */ } finally { setDeleting(false); }
   };
 
   const fetchFiles = useCallback(async () => {
@@ -66,6 +125,42 @@ export default function Container() {
     } catch { setDetail(null); } finally { setDetailLoading(false); }
   };
 
+  // Rendered on every screen, since each one returns separately.
+  const deleteModal = confirmDelete && (
+    <Modal
+      isOpen
+      onClose={deleting ? () => {} : () => setConfirmDelete(null)}
+      title="Delete this order?"
+      size="sm"
+      footer={
+        <>
+          <button onClick={() => setConfirmDelete(null)} disabled={deleting} className="btn-secondary btn btn-sm">Cancel</button>
+          <button onClick={deleteOrder} disabled={deleting} className="btn btn-sm bg-red-600 hover:bg-red-700 text-white">
+            {deleting ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
+            Delete permanently
+          </button>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-800 text-sm px-3 py-2 rounded-lg">
+          <AlertTriangle size={16} className="shrink-0 mt-0.5" />
+          <span>This permanently deletes the order and its images, barcodes and attachments. It cannot be undone.</span>
+        </div>
+        <p className="text-sm text-gray-600">
+          <strong className="font-mono">{confirmDelete.orderNumber}</strong>
+          {confirmDelete.orderStatus ? <> · {confirmDelete.orderStatus}</> : null}
+          {' '}— {confirmDelete.total} pc{confirmDelete.total === 1 ? '' : 's'}.
+        </p>
+        {!confirmDelete.completed && (
+          <p className="text-sm text-amber-700">
+            This order is <strong>not</strong> marked completed yet — deleting it removes work that is still in production.
+          </p>
+        )}
+      </div>
+    </Modal>
+  );
+
   // ── Screen 3: a single order's items ──
   if (openOrder) {
     return (
@@ -82,22 +177,48 @@ export default function Container() {
             <div className="min-w-0">
               <h1 className="page-title font-mono truncate">{openOrder.orderNumber}</h1>
               <p className="page-subtitle">
-                {openFile} · {openOrder.orderStatus} · <strong className="text-amber-700">{openOrder.pending} pcs left for container</strong> ({openOrder.ready}/{openOrder.total} ready)
+                {openFile} · {openOrder.orderStatus} ·{' '}
+                {openOrder.pending === 0
+                  ? <strong className="text-emerald-700">all {openOrder.total} pcs ready for container</strong>
+                  : <><strong className="text-amber-700">{openOrder.pending} pcs left for container</strong> ({openOrder.ready}/{openOrder.total} ready)</>}
               </p>
+              <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                <ContainerTags size={openOrder.containerSize} number={openOrder.containerNumber} />
+                {openOrder.completed && <CompletedBadge />}
+              </div>
             </div>
           </div>
-          {canComplete && openOrder.complete && (
-            <button onClick={markComplete} disabled={completing} className="btn text-sm bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto justify-center">
-              {completing ? <Loader2 size={15} className="animate-spin" /> : <CheckCircle2 size={15} />}
-              Mark order completed
-            </button>
-          )}
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            {canComplete && openOrder.complete && !openOrder.completed && (
+              <button onClick={markComplete} disabled={completing} className="btn text-sm bg-emerald-600 hover:bg-emerald-700 text-white flex-1 sm:flex-none justify-center">
+                {completing ? <Loader2 size={15} className="animate-spin" /> : <CheckCircle2 size={15} />}
+                Mark order completed
+              </button>
+            )}
+            {canDelete && (
+              <button
+                onClick={() => setConfirmDelete(openOrder)}
+                className="btn btn-secondary text-sm text-red-700 border-red-200 hover:bg-red-50 flex-1 sm:flex-none justify-center"
+                title="Permanently delete this order"
+              >
+                <Trash2 size={15} /> Delete
+              </button>
+            )}
+          </div>
         </div>
 
-        {openOrder.complete && (
+        {openOrder.completed ? (
           <div className="flex items-start gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-3 py-2 rounded-lg">
             <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
-            <span>All {openOrder.total} pieces are Ready for Container. Mark the order completed to close it — it will move to Office → Orders and leave every production/stage view.</span>
+            <span>
+              Completed. This order stays here as a record of what went in the container — it has left the production and
+              stage views. Use <strong>Delete</strong> when you no longer need it.
+            </span>
+          </div>
+        ) : openOrder.complete && (
+          <div className="flex items-start gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-3 py-2 rounded-lg">
+            <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+            <span>All {openOrder.total} pieces are Ready for Container. Mark the order completed to close it — it leaves every production/stage view but stays listed here.</span>
           </div>
         )}
 
