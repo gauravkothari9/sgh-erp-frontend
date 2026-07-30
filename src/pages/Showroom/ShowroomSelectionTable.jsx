@@ -46,7 +46,7 @@ function CustomerPicker({ customer, onPick }) {
       <div className="flex items-center gap-2 text-sm">
         <span className="text-gray-500">Customer:</span>
         <span className="font-semibold text-gray-800">{customer.companyName}</span>
-        <span className="text-[11px] text-gray-400">{customer.fileNumber}</span>
+        <span className="text-[13px] text-gray-400">{customer.fileNumber}</span>
         <button onClick={() => onPick(null)} className="text-gray-300 hover:text-red-500" title="Change customer">
           <X size={14} />
         </button>
@@ -79,7 +79,7 @@ function CustomerPicker({ customer, onPick }) {
               className="w-full text-left px-3 py-2 hover:bg-linen-50 border-b border-linen-200 last:border-0"
             >
               <p className="text-sm font-semibold text-gray-800">{c.companyName}</p>
-              <p className="text-[11px] text-gray-400">{c.fileNumber}{c.contactPerson ? ` · ${c.contactPerson}` : ''}</p>
+              <p className="text-[13px] text-gray-400">{c.fileNumber}{c.contactPerson ? ` · ${c.contactPerson}` : ''}</p>
             </button>
           ))}
         </div>
@@ -205,7 +205,7 @@ export default function ShowroomSelectionTable() {
         <div>
           <p className="font-bold text-gray-800 text-sm flex items-center gap-2">
             Selected products
-            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold ${
+            <span className={`text-[12px] px-2 py-0.5 rounded-full border font-semibold ${
               isLocal
                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                 : 'bg-blue-50 text-blue-700 border-blue-200'
@@ -213,7 +213,7 @@ export default function ShowroomSelectionTable() {
               {isLocal ? 'Local customer' : 'Normal customer'}
             </span>
           </p>
-          <p className="text-[11px] text-gray-500">
+          <p className="text-[13px] text-gray-500">
             {rows.length} item{rows.length === 1 ? '' : 's'} across all zones — {isLocal
               ? 'priced at their local price; adjust if needed, then create the local order'
               : 'quote a price per item, then export or create the draft order'}
@@ -242,14 +242,14 @@ export default function ShowroomSelectionTable() {
       </div>
 
       {!isLocal && missingPrice > 0 && (
-        <p className="px-4 py-2 text-[11px] text-amber-700 bg-amber-50 border-b border-amber-200">
+        <p className="px-4 py-2 text-[13px] text-amber-700 bg-amber-50 border-b border-amber-200">
           {missingPrice} item{missingPrice === 1 ? '' : 's'} still have no price — they will carry ₹0 into the order.
         </p>
       )}
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[52rem]">
-          <thead className="bg-linen-100 text-[11px] uppercase tracking-wider text-gray-500">
+          <thead className="bg-linen-100 text-[13px] uppercase tracking-wider text-gray-500">
             <tr>
               <th className="px-3 py-2 text-left w-14">Sr. No.</th>
               <th className="px-3 py-2 text-left">Name</th>
@@ -271,7 +271,7 @@ export default function ShowroomSelectionTable() {
                   <td className="px-3 py-2 text-gray-500">{idx + 1}</td>
                   <td className="px-3 py-2">
                     <p className="font-semibold text-gray-800">{p.name}</p>
-                    <p className="text-[11px] text-gray-400">
+                    <p className="text-[13px] text-gray-400">
                       {p.sku ? `${p.sku} · ` : ''}{row.branch} · Zone {row.zone}
                     </p>
                   </td>
@@ -285,7 +285,7 @@ export default function ShowroomSelectionTable() {
                       onChange={(e) => setField(row.id, 'orderQty', e.target.value)}
                       className={`input py-1.5 text-sm ${over ? 'border-red-400 focus:border-red-500' : ''}`}
                     />
-                    <p className={`text-[10px] mt-0.5 ${over ? 'text-red-500 font-semibold' : 'text-gray-400'}`} title={stockSummary(p)}>
+                    <p className={`text-[12px] mt-0.5 ${over ? 'text-red-500 font-semibold' : 'text-gray-400'}`} title={stockSummary(p)}>
                       {over ? `Only ${stock} in stock` : `${stock} available`}
                     </p>
                   </td>
@@ -298,7 +298,7 @@ export default function ShowroomSelectionTable() {
                       placeholder={isLocal && p.localPrice ? String(p.localPrice) : 'Enter price'}
                       className="input py-1.5 text-sm"
                     />
-                    <p className="text-[10px] text-gray-400 mt-0.5">
+                    <p className="text-[12px] text-gray-400 mt-0.5">
                       {isLocal
                         ? `Local price ₹ ${Number(p.localPrice || 0).toLocaleString('en-IN')}`
                         : `Base ₹ ${Number(p.basePrice || 0).toLocaleString('en-IN')} (ref)`}

@@ -409,7 +409,7 @@ export default function OrderGallery() {
                         )}
 
                         {img.isPrimary && !selectMode && (
-                          <div className="absolute top-2 left-2 bg-brand-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                          <div className="absolute top-2 left-2 bg-brand-600 text-white text-[11px] font-bold px-1.5 py-0.5 rounded shadow-sm">
                             PRIMARY
                           </div>
                         )}
@@ -417,7 +417,7 @@ export default function OrderGallery() {
 
                       <div className="px-1 flex items-start justify-between gap-2">
                         <p
-                          className={`text-[11px] font-mono truncate flex-1 min-w-0 ${img.isPrimary ? 'text-brand-700 font-bold' : 'text-gray-500'}`}
+                          className={`text-[13px] font-mono truncate flex-1 min-w-0 ${img.isPrimary ? 'text-brand-700 font-bold' : 'text-gray-500'}`}
                           title={img.label}
                         >
                           {img.label}

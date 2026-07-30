@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Factory, Warehouse, Hammer, Truck, Share2, Loader2, Save } from 'lucide-react';
+import { Factory, Warehouse, Hammer, Truck, Share2, Boxes, Loader2, Save } from 'lucide-react';
 import Modal from '../common/Modal';
 import { productionAPI } from '../../utils/api';
 import toast from 'react-hot-toast';
@@ -24,7 +24,7 @@ const Choice = ({ active, onClick, icon: Icon, label, sub }) => (
   >
     <Icon size={22} strokeWidth={1.6} />
     <span className="text-sm font-semibold">{label}</span>
-    {sub && <span className="text-[11px] text-gray-400">{sub}</span>}
+    {sub && <span className="text-[13px] text-gray-400">{sub}</span>}
   </button>
 );
 
@@ -46,6 +46,7 @@ export default function RouteItemModal({ isOpen, onClose, orderId, item, onRoute
   const [branch, setBranch] = useState('');
   const [category, setCategory] = useState('');
   const [sourcing, setSourcing] = useState('');
+  const [subUnit, setSubUnit] = useState('');   // Kakani in-house: Manufacturing | Iron Khata
   const [maker, setMaker] = useState('');
   const [outsource, setOutsource] = useState({
     supplierName: '', supplierContact: '',
@@ -63,6 +64,7 @@ export default function RouteItemModal({ isOpen, onClose, orderId, item, onRoute
     setBranch(p.branch || '');
     setCategory(p.productionType || '');
     setSourcing(p.sourcing || '');
+    setSubUnit(p.subUnit || '');
     setMaker(p.maker || '');
     const o = p.outsource || {};
     const d = (v) => (v ? String(v).slice(0, 10) : '');
@@ -74,14 +76,17 @@ export default function RouteItemModal({ isOpen, onClose, orderId, item, onRoute
   }, [isOpen, item]);
 
   const isOutsource = branch === 'Kakani' && sourcing === 'Outsourced';
+  const isKakaniInhouse = branch === 'Kakani' && sourcing === 'In-house';
+  // 'Iron Khata' is now a workshop tile, not a person — drop it from the maker
+  // list so it isn't picked in both places.
   const makerOptions = useMemo(
-    () => makers.filter((m) => !branch || m.location === branch),
+    () => makers.filter((m) => (!branch || m.location === branch) && m.name !== 'Iron Khata'),
     [makers, branch]
   );
 
   const canSave =
     (branch === 'Jhalamand' && !!category) ||
-    (branch === 'Kakani' && sourcing === 'In-house' && !!category) ||
+    (isKakaniInhouse && !!subUnit) ||
     (branch === 'Kakani' && sourcing === 'In Stock') ||
     (isOutsource && !!outsource.supplierName.trim());
 
@@ -100,9 +105,12 @@ export default function RouteItemModal({ isOpen, onClose, orderId, item, onRoute
       } else if (sourcing === 'In Stock') {
         payload.sourcing = 'In Stock';
       } else {
+        // Kakani in-house — the workshop tile is required; maker is an optional
+        // person within the Manufacturing unit (Iron Khata has no sub-maker).
         payload.sourcing = 'In-house';
-        payload.category = category;
-        if (maker) payload.maker = maker;
+        payload.category = category || 'Production';
+        payload.subUnit = subUnit;
+        if (subUnit === 'Manufacturing' && maker) payload.maker = maker;
       }
       const res = await productionAPI.setItemProduction(orderId, item._id, payload);
       toast.success('Item routed');
@@ -136,8 +144,8 @@ export default function RouteItemModal({ isOpen, onClose, orderId, item, onRoute
         <div>
           <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">1 · Which unit?</p>
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            <Choice active={branch === 'Kakani'} onClick={() => { setBranch('Kakani'); setCategory(''); setSourcing(''); setMaker(''); }} icon={Factory} label="Kakani" sub="Finishing + container" />
-            <Choice active={branch === 'Jhalamand'} onClick={() => { setBranch('Jhalamand'); setSourcing('In-house'); setMaker(''); }} icon={Warehouse} label="Jhalamand" sub="Ships to Kakani" />
+            <Choice active={branch === 'Kakani'} onClick={() => { setBranch('Kakani'); setCategory(''); setSourcing(''); setSubUnit(''); setMaker(''); }} icon={Factory} label="Kakani" sub="Finishing + container" />
+            <Choice active={branch === 'Jhalamand'} onClick={() => { setBranch('Jhalamand'); setSourcing('In-house'); setSubUnit(''); setMaker(''); }} icon={Warehouse} label="Jhalamand" sub="Ships to Kakani" />
           </div>
         </div>
 
@@ -158,23 +166,24 @@ export default function RouteItemModal({ isOpen, onClose, orderId, item, onRoute
             <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">2 · Made how?</p>
             <div className="flex flex-wrap gap-2 sm:gap-3">
               <Choice active={sourcing === 'In-house'} onClick={() => { setSourcing('In-house'); setCategory('Production'); }} icon={Hammer} label="In-house" sub="Made at Kakani" />
-              <Choice active={sourcing === 'Outsourced'} onClick={() => { setSourcing('Outsourced'); setCategory(''); setMaker(''); }} icon={Share2} label="Outsource" sub="External supplier" />
+              <Choice active={sourcing === 'Outsourced'} onClick={() => { setSourcing('Outsourced'); setCategory(''); setSubUnit(''); setMaker(''); }} icon={Share2} label="Outsource" sub="External supplier" />
             </div>
           </div>
         )}
 
-        {/* Step 3 — Kakani in-house: type (Production only) */}
-        {branch === 'Kakani' && sourcing === 'In-house' && (
+        {/* Step 3 — Kakani in-house: which workshop makes it */}
+        {isKakaniInhouse && (
           <div>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">3 · Type</p>
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">3 · Which workshop?</p>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <Choice active={category === 'Production'} onClick={() => setCategory('Production')} icon={Factory} label="Production" sub="Manufacturing" />
+              <Choice active={subUnit === 'Manufacturing'} onClick={() => setSubUnit('Manufacturing')} icon={Factory} label="Manufacturing Unit" sub="Made at Kakani" />
+              <Choice active={subUnit === 'Iron Khata'} onClick={() => { setSubUnit('Iron Khata'); setMaker(''); }} icon={Boxes} label="Iron Khata" sub="Iron Khata workshop" />
             </div>
           </div>
         )}
 
-        {/* Maker (in-house paths) */}
-        {((branch === 'Jhalamand' && category) || (branch === 'Kakani' && sourcing === 'In-house' && category)) && (
+        {/* Maker — Jhalamand, or the Kakani Manufacturing unit (Iron Khata has none) */}
+        {((branch === 'Jhalamand' && category) || (isKakaniInhouse && subUnit === 'Manufacturing')) && (
           <div>
             <label className="label">Maker <span className="text-gray-400 font-normal">(optional)</span></label>
             <select value={maker} onChange={(e) => setMaker(e.target.value)} className="input">

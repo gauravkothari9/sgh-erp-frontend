@@ -7,7 +7,7 @@ const money = (n) => `₹ ${Number(n || 0).toLocaleString('en-IN')}`;
 const day = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—');
 
 const StatusPill = ({ status }) => (
-  <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
+  <span className={`text-[12px] px-2 py-0.5 rounded-full border ${
     status === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
     : status === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200'
     : status === 'Refund Due' ? 'bg-blue-50 text-blue-700 border-blue-200'
@@ -89,7 +89,7 @@ export default function LocalSales() {
         <div className="bg-white border border-linen-300 rounded-xl shadow-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[42rem]">
-              <thead className="bg-linen-100 text-[11px] uppercase tracking-wider text-gray-500">
+              <thead className="bg-linen-100 text-[13px] uppercase tracking-wider text-gray-500">
                 <tr>
                   <th className="px-3 py-2 text-left">Order</th>
                   <th className="px-3 py-2 text-left">Date</th>
@@ -107,7 +107,7 @@ export default function LocalSales() {
                     <td className="px-3 py-2 text-gray-600">{day(s.saleDate)}</td>
                     <td className="px-3 py-2">
                       <p className="text-gray-800">{s.customerName}</p>
-                      <p className="text-[11px] text-gray-400">{s.customerPhone}</p>
+                      <p className="text-[13px] text-gray-400">{s.customerPhone}</p>
                     </td>
                     <td className="px-3 py-2 text-gray-600">{s.items?.length || 0}</td>
                     <td className="px-3 py-2 text-right font-bold text-gray-800">{money(s.totalAmount)}</td>
@@ -116,7 +116,7 @@ export default function LocalSales() {
                     </td>
                     <td className="px-3 py-2">
                       <StatusPill status={s.paymentStatus} />
-                      <span className="ml-2 text-[11px] text-gray-400">{s.paymentMode}</span>
+                      <span className="ml-2 text-[13px] text-gray-400">{s.paymentMode}</span>
                     </td>
                   </tr>
                 ))}

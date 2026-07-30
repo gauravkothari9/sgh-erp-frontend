@@ -303,19 +303,19 @@ export default function ShowroomCollections() {
                 </div>
 
                 <div className="p-3">
-                  {p.collectionName && <p className="text-[10px] font-semibold text-brand-600 uppercase tracking-wider truncate">{p.collectionName}</p>}
+                  {p.collectionName && <p className="text-[12px] font-semibold text-brand-600 uppercase tracking-wider truncate">{p.collectionName}</p>}
                   <p className="font-bold text-gray-800 text-sm truncate" title={p.name}>{p.name}</p>
                   <p className="text-xs text-gray-500 truncate">{productSizeLabel(p) || '—'}</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5 truncate" title={stockSummary(p)}>
+                  <p className="text-[13px] text-gray-500 mt-0.5 truncate" title={stockSummary(p)}>
                     <strong className="text-gray-800">{totalQtyOf(p)}</strong> in stock · {stockSummary(p) || '—'}
                   </p>
                   {p.localPrice ? (
                     <p className="text-sm font-bold text-brand-700 mt-1">
                       ₹ {Number(p.localPrice).toLocaleString('en-IN')}{' '}
-                      <span className="text-[10px] font-medium text-gray-400">(Local Price)</span>
+                      <span className="text-[12px] font-medium text-gray-400">(Local Price)</span>
                     </p>
                   ) : (
-                    <p className="text-[11px] font-semibold text-red-600 mt-1 flex items-center gap-1">
+                    <p className="text-[13px] font-semibold text-red-600 mt-1 flex items-center gap-1">
                       <AlertTriangle size={12} /> No local price set
                     </p>
                   )}

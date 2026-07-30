@@ -100,7 +100,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-brand-ink">{r.showroom.name}</p>
-                      <p className="text-[11px] font-mono text-brand-inkMuted">{r.showroom.code}</p>
+                      <p className="text-[13px] font-mono text-brand-inkMuted">{r.showroom.code}</p>
                     </div>
                   </div>
                   <span className="text-2xl font-bold text-brand-ink tabular-nums">{r.pieces}</span>
@@ -123,7 +123,7 @@ export default function DashboardPage() {
             {locData.hierarchy.map((p) => (
               <div key={p.id} className="bg-brand-surface border border-brand-border rounded-xl p-4">
                 <p className="text-sm font-bold text-brand-ink">{p.name}</p>
-                <p className="text-[11px] font-mono text-brand-inkMuted mb-2">{p.code}</p>
+                <p className="text-[13px] font-mono text-brand-inkMuted mb-2">{p.code}</p>
                 <ul className="space-y-1">
                   {p.children.map((c) => (
                     <li key={c.id}>
@@ -148,7 +148,7 @@ function Kpi({ icon: Icon, label, value, accent }) {
       <div className={`w-8 h-8 rounded-lg ${accent} flex items-center justify-center mb-2`}>
         <Icon size={15} />
       </div>
-      <p className="text-[10px] uppercase tracking-wider text-brand-inkMuted">{label}</p>
+      <p className="text-[12px] uppercase tracking-wider text-brand-inkMuted">{label}</p>
       <p className="text-lg font-bold text-brand-ink tabular-nums">{value}</p>
     </div>
   );
@@ -168,7 +168,7 @@ function QuickAction({ to, icon: Icon, label }) {
 function Stat({ label, value }) {
   return (
     <div className="bg-brand-bg rounded-lg px-2.5 py-1.5">
-      <p className="text-[10px] text-brand-inkMuted">{label}</p>
+      <p className="text-[12px] text-brand-inkMuted">{label}</p>
       <p className="text-sm font-semibold text-brand-ink tabular-nums">{value}</p>
     </div>
   );

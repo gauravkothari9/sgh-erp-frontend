@@ -27,7 +27,7 @@ export default function LocationAdminPage() {
               </div>
               <div>
                 <p className="font-bold text-brand-ink">{p.name}</p>
-                <p className="text-[11px] font-mono text-brand-inkMuted">{p.code}</p>
+                <p className="text-[13px] font-mono text-brand-inkMuted">{p.code}</p>
               </div>
             </div>
             <ul className="ml-12 space-y-1">

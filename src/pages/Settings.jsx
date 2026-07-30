@@ -23,7 +23,7 @@ const Card = ({ icon: Icon, title, subtitle, children }) => (
       </div>
       <div>
         <p className="text-sm font-bold text-espresso-900">{title}</p>
-        {subtitle && <p className="text-[11px] text-gray-400">{subtitle}</p>}
+        {subtitle && <p className="text-[13px] text-gray-400">{subtitle}</p>}
       </div>
     </div>
     <div className="p-5">{children}</div>
@@ -179,7 +179,7 @@ export default function Settings() {
             <div>
               <label className="label">Bill footer</label>
               <input value={l.billFooter || ''} onChange={(e) => setSection('local', 'billFooter', e.target.value)} disabled={!canEdit} className="input" />
-              <p className="text-[10px] text-gray-400 mt-0.5">Printed at the bottom of every local bill.</p>
+              <p className="text-[12px] text-gray-400 mt-0.5">Printed at the bottom of every local bill.</p>
             </div>
             <div>
               <label className="label">Terms &amp; conditions</label>
@@ -195,7 +195,7 @@ export default function Settings() {
               <div key={g.key} className="flex items-start justify-between gap-3 py-1">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-gray-800">{g.label}</p>
-                  <p className="text-[11px] text-gray-400">{g.desc}</p>
+                  <p className="text-[13px] text-gray-400">{g.desc}</p>
                 </div>
                 <Toggle
                   checked={n[g.key] !== false}
@@ -204,7 +204,7 @@ export default function Settings() {
                 />
               </div>
             ))}
-            <p className="text-[11px] text-gray-400 pt-2 border-t border-linen-200">
+            <p className="text-[13px] text-gray-400 pt-2 border-t border-linen-200">
               Recipients are always the Admins plus the employees who hold the module the event belongs to.
             </p>
           </div>
@@ -218,14 +218,14 @@ export default function Settings() {
                 <p className="text-sm font-semibold text-gray-800">{branch}</p>
                 <div className="flex gap-1.5">
                   {zones.map((z) => (
-                    <span key={z} className="text-[11px] px-2 py-0.5 rounded-md bg-linen-100 text-espresso-700 border border-linen-300">
+                    <span key={z} className="text-[13px] px-2 py-0.5 rounded-md bg-linen-100 text-espresso-700 border border-linen-300">
                       Zone {z}
                     </span>
                   ))}
                 </div>
               </div>
             ))}
-            <p className="text-[11px] text-gray-400 pt-2 border-t border-linen-200">
+            <p className="text-[13px] text-gray-400 pt-2 border-t border-linen-200">
               Zones are fixed in code (<code>backend/config/showroom.js</code>). Ask a developer to add or rename one.
             </p>
           </div>

@@ -110,7 +110,7 @@ export default function Notifications() {
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm ${n.isRead ? 'font-medium text-gray-700' : 'font-bold text-gray-900'}`}>{n.title}</p>
                   <p className="text-xs text-gray-500">{n.message}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{timeAgo(n.createdAt)}</p>
+                  <p className="text-[12px] text-gray-400 mt-0.5">{timeAgo(n.createdAt)}</p>
                 </div>
                 {!n.isRead && <span className="w-2 h-2 bg-terracotta-500 rounded-full shrink-0 mt-2" />}
               </button>

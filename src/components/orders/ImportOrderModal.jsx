@@ -718,11 +718,11 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
             <p className="text-sm font-semibold text-gray-800 truncate max-w-full px-2">
               {excelFile ? excelFile.name : 'Upload Excel sheet'}
             </p>
-            <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+            <p className="text-[12px] text-gray-400 uppercase tracking-wider">
               .xlsx or .xls
             </p>
             {excelFile && (
-              <span className="text-[10px] font-bold text-brand-600 bg-white border border-brand-200 px-2 py-0.5 rounded-full">
+              <span className="text-[12px] font-bold text-brand-600 bg-white border border-brand-200 px-2 py-0.5 rounded-full">
                 {excelRows.length} row{excelRows.length !== 1 ? 's' : ''} parsed
               </span>
             )}
@@ -749,11 +749,11 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                 ? `${photoFiles.length} photo${photoFiles.length > 1 ? 's' : ''} selected`
                 : 'Upload product photos'}
             </p>
-            <p className="text-[10px] text-gray-400">
+            <p className="text-[12px] text-gray-400">
               Filename = Buyer SKU
             </p>
             {photoFiles.length > 0 && (
-              <span className="text-[10px] font-bold text-brand-600 bg-white border border-brand-200 px-2 py-0.5 rounded-full">
+              <span className="text-[12px] font-bold text-brand-600 bg-white border border-brand-200 px-2 py-0.5 rounded-full">
                 Click to add more
               </span>
             )}
@@ -834,7 +834,7 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
               {photoFiles.length > 0 && (
                 <button
                   onClick={() => setPhotoFiles([])}
-                  className="text-[11px] text-gray-400 hover:text-red-500"
+                  className="text-[13px] text-gray-400 hover:text-red-500"
                   disabled={importing}
                 >
                   Clear photos
@@ -844,7 +844,7 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
             <div className="border border-gray-100 rounded-lg overflow-hidden">
               <div className="max-h-80 overflow-auto">
                 <table className="w-full text-xs">
-                  <thead className="bg-gray-50 text-[10px] uppercase font-semibold text-gray-500 sticky top-0 z-10">
+                  <thead className="bg-gray-50 text-[12px] uppercase font-semibold text-gray-500 sticky top-0 z-10">
                     <tr>
                       <th className="px-2 py-2 text-left">#</th>
                       <th className="px-2 py-2 text-center">Media</th>
@@ -891,13 +891,13 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                                     title={fromSheet ? 'From the Excel file' : 'From uploaded photos'}
                                   />
                                   {gallery.length > 1 && (
-                                    <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-green-600 text-white rounded-full px-1 min-w-[14px] text-center">
+                                    <span className="absolute -top-1 -right-1 text-[11px] font-bold bg-green-600 text-white rounded-full px-1 min-w-[14px] text-center">
                                       {gallery.length}
                                     </span>
                                   )}
                                 </div>
                               ) : (
-                                <div className="w-10 h-10 rounded border border-dashed border-gray-200 flex items-center justify-center text-gray-300 text-[10px]">
+                                <div className="w-10 h-10 rounded border border-dashed border-gray-200 flex items-center justify-center text-gray-300 text-[12px]">
                                   —
                                 </div>
                               )}
@@ -957,7 +957,7 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                     })}
                   </tbody>
                   {/* Totals row — quick sanity check for the operator. */}
-                  <tfoot className="bg-gray-50 sticky bottom-0 text-[11px] font-semibold text-gray-700">
+                  <tfoot className="bg-gray-50 sticky bottom-0 text-[13px] font-semibold text-gray-700">
                     <tr>
                       <td className="px-2 py-2" colSpan={12}>Totals</td>
                       <td className="px-2 py-2 text-right tabular-nums">
@@ -985,7 +985,7 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                     {unmatchedPhotos.slice(0, 8).map((f, i) => (
                       <span
                         key={i}
-                        className="inline-flex items-center gap-1 font-mono text-[10px] bg-white/70 border border-amber-300 px-1.5 py-0.5 rounded"
+                        className="inline-flex items-center gap-1 font-mono text-[12px] bg-white/70 border border-amber-300 px-1.5 py-0.5 rounded"
                       >
                         {f.name}
                         <button
@@ -999,12 +999,12 @@ export default function ImportOrderModal({ isOpen, onClose, fileNumber, onCreate
                       </span>
                     ))}
                     {unmatchedPhotos.length > 8 && (
-                      <span className="text-[10px] font-semibold">
+                      <span className="text-[12px] font-semibold">
                         +{unmatchedPhotos.length - 8} more
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-[11px] opacity-80">
+                  <p className="mt-1 text-[13px] opacity-80">
                     Rename them to match a Buyer SKU (e.g.{' '}
                     <span className="font-mono">BUYER-CAB-A1.jpg</span>) and re-upload,
                     or import without them.

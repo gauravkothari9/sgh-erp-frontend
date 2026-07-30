@@ -106,11 +106,11 @@ export default function FloorViewPage() {
                       <Package size={40} strokeWidth={1.5} />
                     </div>
                   )}
-                  <span className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-md ${STAGE_COLORS[p.currentStage] || ''}`}>
+                  <span className={`absolute top-2 left-2 text-[12px] font-bold px-2 py-0.5 rounded-md ${STAGE_COLORS[p.currentStage] || ''}`}>
                     {p.currentStage.replace('_', ' ')}
                   </span>
                   {p.daysOnDisplay != null && (
-                    <span className="absolute bottom-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded-md bg-black/60 text-white">
+                    <span className="absolute bottom-2 right-2 text-[12px] font-mono px-2 py-0.5 rounded-md bg-black/60 text-white">
                       {p.daysOnDisplay}d
                     </span>
                   )}
@@ -135,7 +135,7 @@ function Chip({ label, active, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition ${
+      className={`text-[13px] font-semibold px-2.5 py-1 rounded-full border transition ${
         active ? 'bg-brand-primary text-white border-brand-primary' : 'bg-white text-brand-inkMuted border-brand-border hover:border-brand-primary/40'
       }`}
     >

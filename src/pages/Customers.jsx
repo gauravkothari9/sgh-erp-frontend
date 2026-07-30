@@ -152,7 +152,7 @@ export default function Customers() {
                         <div>
                           <p className="font-medium text-gray-900">{c.companyName}</p>
                           {c.contactPersonName && (
-                            <p className="text-[11px] text-gray-400">{c.contactPersonName}</p>
+                            <p className="text-[13px] text-gray-400">{c.contactPersonName}</p>
                           )}
                         </div>
                       </div>
@@ -216,7 +216,7 @@ export default function Customers() {
                     <div className="min-w-0">
                       <p className="font-semibold text-gray-900 truncate">{c.companyName}</p>
                       {c.contactPersonName && (
-                        <p className="text-[11px] text-gray-400 truncate">{c.contactPersonName}</p>
+                        <p className="text-[13px] text-gray-400 truncate">{c.contactPersonName}</p>
                       )}
                     </div>
                   </div>

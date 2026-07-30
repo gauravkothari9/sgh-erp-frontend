@@ -56,7 +56,7 @@ export default function Navbar({ onMenuClick }) {
             </div>
             <div className="hidden sm:block text-left">
               <p className="text-sm font-medium text-espresso-900 leading-tight tracking-wide">{user?.fullName}</p>
-              <p className="text-[10px] text-espresso-500 uppercase tracking-widest mt-0.5">
+              <p className="text-[12px] text-espresso-500 uppercase tracking-widest mt-0.5">
                 {user?.role === 'Admin' ? 'Administrator' : user?.designation || 'Employee'}
               </p>
             </div>
@@ -74,7 +74,7 @@ export default function Navbar({ onMenuClick }) {
                   <p className="text-xs text-espresso-500 mt-1 font-light tracking-wide">
                     {user?.role === 'Admin' ? 'Administrator' : user?.designation || user?.role}
                   </p>
-                  <p className="text-[11px] text-espresso-400 mt-0.5">{user?.email}</p>
+                  <p className="text-[13px] text-espresso-400 mt-0.5">{user?.email}</p>
                 </div>
                 <button
                   onClick={() => { setDropdownOpen(false); navigate('/profile'); }}

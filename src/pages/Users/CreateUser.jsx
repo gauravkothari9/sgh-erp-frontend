@@ -75,7 +75,7 @@ const StepIndicator = ({ step, isAdmin }) => {
                     Step {s.n}
                   </p>
                   <p
-                    className={`text-[11px] sm:text-xs truncate ${
+                    className={`text-[13px] sm:text-xs truncate ${
                       disabled
                         ? 'text-gray-300'
                         : active
@@ -480,7 +480,7 @@ export default function CreateUser() {
                         style={{ width: `${pwStrength.pct}%` }}
                       />
                     </div>
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-[13px] text-gray-500">
                       Strength: <span className="font-semibold">{pwStrength.label}</span>
                     </p>
                   </div>
@@ -609,7 +609,7 @@ export default function CreateUser() {
                           <span className="text-sm font-semibold text-gray-800 truncate">
                             {dept}
                           </span>
-                          <span className="text-[10px] text-gray-400 whitespace-nowrap">
+                          <span className="text-[12px] text-gray-400 whitespace-nowrap">
                             {deptMods.length} module{deptMods.length === 1 ? '' : 's'}
                           </span>
                         </div>

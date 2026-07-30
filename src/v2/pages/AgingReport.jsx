@@ -34,7 +34,7 @@ export default function AgingReportPage() {
       <div className="bg-brand-surface border border-brand-border rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-brand-bg sticky top-0">
-            <tr className="text-left text-[10px] uppercase tracking-wider text-brand-inkMuted">
+            <tr className="text-left text-[12px] uppercase tracking-wider text-brand-inkMuted">
               <th className="px-3 py-2">Code</th>
               <th className="px-3 py-2">Product</th>
               <th className="px-3 py-2">Showroom</th>

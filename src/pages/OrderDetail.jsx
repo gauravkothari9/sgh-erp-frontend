@@ -1219,7 +1219,7 @@ export default function OrderDetail() {
               <StatusBadge status={order.orderStatus} />
               <OrderTypeBadge type={order.orderType} />
               {order.revisionNumber > 0 && (
-                <span className="text-[11px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-medium">
+                <span className="text-[13px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-medium">
                   v{order.revisionNumber}
                 </span>
               )}
@@ -1294,7 +1294,7 @@ export default function OrderDetail() {
                   <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-xl shadow-card-hover border border-brand-100 py-1.5 z-20">
                     {forwardStatuses.length > 0 && (
                       <>
-                        <p className="px-3 pt-1 pb-0.5 text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+                        <p className="px-3 pt-1 pb-0.5 text-[12px] uppercase tracking-wider text-gray-400 font-semibold">
                           Move forward
                         </p>
                         {forwardStatuses.map((s) => (
@@ -1311,7 +1311,7 @@ export default function OrderDetail() {
                     {backwardStatuses.length > 0 && (
                       <>
                         <div className="h-px bg-brand-50 my-1" />
-                        <p className="px-3 pt-1 pb-0.5 text-[10px] uppercase tracking-wider text-amber-600 font-semibold">
+                        <p className="px-3 pt-1 pb-0.5 text-[12px] uppercase tracking-wider text-amber-600 font-semibold">
                           Revert (Admin only)
                         </p>
                         {backwardStatuses.slice().reverse().map((s) => (
@@ -1570,7 +1570,7 @@ export default function OrderDetail() {
                             {has.description && (
                               <td className="border border-brand-100 px-2 align-top overflow-hidden" style={{ height: '120px' }}>
                                 <p className="font-medium text-gray-800 text-xs">{item.itemDescription || '—'}</p>
-                                {item.buyerDescription && <p className="text-[11px] text-gray-400 mt-0.5">{item.buyerDescription}</p>}
+                                {item.buyerDescription && <p className="text-[13px] text-gray-400 mt-0.5">{item.buyerDescription}</p>}
                               </td>
                             )}
                             {has.category && (
@@ -1582,7 +1582,7 @@ export default function OrderDetail() {
                             {has.materials && (
                               <td className="border border-brand-100 px-2 text-xs text-gray-600 align-top" style={{ height: '120px' }}>
                                 {(item.materials?.length > 0 ? item.materials : (item.material ? [item.material] : [])).map((m, i) => (
-                                  <span key={i} className="inline-block bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] mr-1 mb-0.5">{m}</span>
+                                  <span key={i} className="inline-block bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[12px] mr-1 mb-0.5">{m}</span>
                                 ))}
                                 {(!item.materials?.length && !item.material) && '—'}
                               </td>
@@ -1590,7 +1590,7 @@ export default function OrderDetail() {
                             {has.finishes && (
                               <td className="border border-brand-100 px-2 text-xs text-gray-600 align-top" style={{ height: '120px' }}>
                                 {(item.finishes?.length > 0 ? item.finishes : (item.finish ? [item.finish] : [])).map((f, i) => (
-                                  <span key={i} className="inline-block bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] mr-1 mb-0.5">{f}</span>
+                                  <span key={i} className="inline-block bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[12px] mr-1 mb-0.5">{f}</span>
                                 ))}
                                 {(!item.finishes?.length && !item.finish) && '—'}
                               </td>
@@ -1598,7 +1598,7 @@ export default function OrderDetail() {
                             {has.condition && (
                               <td className="border border-brand-100 px-2 align-top" style={{ height: '120px' }}>
                                 {item.itemCondition ? (
-                                  <span className="text-[11px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">{item.itemCondition}</span>
+                                  <span className="text-[13px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">{item.itemCondition}</span>
                                 ) : '—'}
                               </td>
                             )}
@@ -1638,7 +1638,7 @@ export default function OrderDetail() {
                             {has.barcode && (
                               <td className="border border-brand-100 align-top" style={{ height: '120px' }}>
                                 <div className="flex flex-col gap-1 px-1.5 py-1.5 h-full">
-                                  {item.barcode?.text && <span className="font-mono text-gray-600 text-[11px]">{item.barcode.text}</span>}
+                                  {item.barcode?.text && <span className="font-mono text-gray-600 text-[13px]">{item.barcode.text}</span>}
                                   {item.barcode?.image && (
                                     <button
                                       type="button"
@@ -1713,7 +1713,7 @@ export default function OrderDetail() {
                                             <ZoomIn size={18} className="text-white" />
                                           </span>
                                           {allImages.length > 1 && (
-                                            <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-brand-600 text-white px-1.5 py-0.5 rounded">
+                                            <span className="absolute bottom-1 right-1 text-[12px] font-bold bg-brand-600 text-white px-1.5 py-0.5 rounded">
                                               {allImages.length} pics
                                             </span>
                                           )}
@@ -1766,7 +1766,7 @@ export default function OrderDetail() {
                                   className="w-full h-full object-cover"
                                 />
                                 {item.images.length > 1 && (
-                                  <span className="absolute bottom-0.5 right-0.5 text-[9px] font-bold bg-brand-600 text-white px-1 rounded">
+                                  <span className="absolute bottom-0.5 right-0.5 text-[11px] font-bold bg-brand-600 text-white px-1 rounded">
                                     +{item.images.length - 1}
                                   </span>
                                 )}
@@ -1777,13 +1777,13 @@ export default function OrderDetail() {
                                 <span className="font-mono text-xs font-bold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded truncate min-w-0">
                                   {item.companySKU || item.skuNumber}
                                 </span>
-                                <span className="text-[11px] text-gray-400 flex-shrink-0">#{idx + 1}</span>
+                                <span className="text-[13px] text-gray-400 flex-shrink-0">#{idx + 1}</span>
                               </div>
                               {item.itemDescription && (
                                 <p className="text-xs font-medium text-gray-800 mt-1 break-words">{item.itemDescription}</p>
                               )}
                               {item.buyerSKU && (
-                                <p className="text-[11px] text-gray-400 font-mono mt-0.5 truncate">Buyer SKU: {item.buyerSKU}</p>
+                                <p className="text-[13px] text-gray-400 font-mono mt-0.5 truncate">Buyer SKU: {item.buyerSKU}</p>
                               )}
                             </div>
                           </div>
@@ -1851,7 +1851,7 @@ export default function OrderDetail() {
                                 >
                                   <img src={resolveMediaSrc(commentImages[commentImages.length - 1])} alt="Comment" onError={imgErrorFallback} className="w-full h-full object-cover" />
                                   {commentImages.length > 1 && (
-                                    <span className="absolute bottom-0 right-0 text-[9px] font-bold bg-brand-600 text-white px-1 rounded">
+                                    <span className="absolute bottom-0 right-0 text-[11px] font-bold bg-brand-600 text-white px-1 rounded">
                                       {commentImages.length}
                                     </span>
                                   )}
@@ -1942,7 +1942,7 @@ export default function OrderDetail() {
                           ))}
                         </div>
                       )}
-                      <p className="text-[11px] text-gray-400 mt-1">
+                      <p className="text-[13px] text-gray-400 mt-1">
                         {c.createdByName || 'System'} · {timeAgo(c.createdAt)}
                       </p>
                     </div>
@@ -1976,7 +1976,7 @@ export default function OrderDetail() {
                       <Paperclip size={15} className="text-brand-500 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-800 truncate">{att.fileName}</p>
-                        <p className="text-[11px] text-gray-400">{formatDate(att.uploadedAt)}</p>
+                        <p className="text-[13px] text-gray-400">{formatDate(att.uploadedAt)}</p>
                       </div>
                       <a href={att.filePath} target="_blank" rel="noreferrer" className="btn-secondary btn btn-sm flex-shrink-0">View</a>
                     </div>
@@ -2066,7 +2066,7 @@ export default function OrderDetail() {
                 Only fields with data are shown.
               </p>
 
-              <div className="flex items-center justify-between text-[11px] text-gray-500">
+              <div className="flex items-center justify-between text-[13px] text-gray-500">
                 <span className="font-semibold uppercase tracking-wider">
                   Columns ({availablePICols.filter((c) => c.selected).length}/{availablePICols.length})
                 </span>
@@ -2109,7 +2109,7 @@ export default function OrderDetail() {
                     return (
                       <div key={groupName}>
                         <div className="flex items-center justify-between mb-1.5">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-brand-700">
+                          <p className="text-[12px] font-bold uppercase tracking-wider text-brand-700">
                             {groupName}
                           </p>
                           <button
@@ -2122,7 +2122,7 @@ export default function OrderDetail() {
                                 )
                               )
                             }
-                            className="text-[10px] font-semibold text-gray-400 hover:text-brand-600"
+                            className="text-[12px] font-semibold text-gray-400 hover:text-brand-600"
                           >
                             {allOn ? 'None' : 'All'}
                           </button>
@@ -2258,7 +2258,7 @@ export default function OrderDetail() {
               Excel download and the print output.
             </p>
 
-            <div className="flex items-center justify-between text-[11px] text-gray-500">
+            <div className="flex items-center justify-between text-[13px] text-gray-500">
               <span className="font-semibold uppercase tracking-wider">
                 Columns ({availableColumns.filter((c) => c.selected).length}/{availableColumns.length})
               </span>
@@ -2300,7 +2300,7 @@ export default function OrderDetail() {
                   return (
                     <div key={groupName}>
                       <div className="flex items-center justify-between mb-1.5">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-brand-700">
+                        <p className="text-[12px] font-bold uppercase tracking-wider text-brand-700">
                           {groupName}
                         </p>
                         <button
@@ -2313,7 +2313,7 @@ export default function OrderDetail() {
                               )
                             )
                           }
-                          className="text-[10px] font-semibold text-gray-400 hover:text-brand-600"
+                          className="text-[12px] font-semibold text-gray-400 hover:text-brand-600"
                         >
                           {allOn ? 'None' : anyOn ? 'All' : 'All'}
                         </button>

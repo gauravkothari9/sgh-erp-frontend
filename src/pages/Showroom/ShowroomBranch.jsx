@@ -58,7 +58,7 @@ export default function ShowroomBranch({ branch, zones }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-gray-800">Zone {z}</p>
-              <p className="text-[11px] text-gray-400">{branch} showroom</p>
+              <p className="text-[13px] text-gray-400">{branch} showroom</p>
             </div>
             <ChevronRight size={16} className="text-gray-300 group-hover:text-brand-600 transition-colors shrink-0" />
           </button>

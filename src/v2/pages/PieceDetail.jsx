@@ -195,7 +195,7 @@ export default function PieceDetailPage() {
 
 function Badge({ label }) {
   return (
-    <span className="inline-flex items-center text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-brand-primary/10 text-brand-primary">
+    <span className="inline-flex items-center text-[13px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-brand-primary/10 text-brand-primary">
       {label}
     </span>
   );

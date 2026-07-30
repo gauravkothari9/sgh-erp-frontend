@@ -112,7 +112,7 @@ export default function ExistingOrderCustomerModal({ isOpen, onClose, onPicked }
                       <p className="text-sm font-semibold text-gray-800 truncate">
                         {c.companyName}
                       </p>
-                      <p className="text-[11px] text-gray-400">
+                      <p className="text-[13px] text-gray-400">
                         <span className="font-mono text-brand-700">{c.fileNumber}</span>
                         {c.country ? ` · ${c.country}` : ''}
                         {c.currency ? ` · ${c.currency}` : ''}

@@ -1,16 +1,17 @@
 import { Wrench } from 'lucide-react';
 import StageView from '../../components/production/StageView';
 
-// Repairing (antiques) + Manufacturing (Made in Kakani production) at Kakani.
+// Manufacturing unit — every Kakani in-house item tagged "Manufacturing"
+// (i.e. not Iron Khata), across all its stages.
 export default function KakaniRepairing() {
   return (
     <StageView
-      title="Kakani — Repairing / Manufacturing"
-      subtitle="Antiques being repaired and production being made at Kakani"
+      title="Kakani — Manufacturing"
+      subtitle="Items being made in the Kakani manufacturing unit"
       icon={Wrench}
-      filters={{ stage: 'Repairing,Made in Kakani', location: 'Kakani' }}
+      filters={{ branch: 'Kakani', subUnit: 'Manufacturing' }}
       advance
-      emptyText="Nothing in repairing / manufacturing."
+      emptyText="Nothing in the manufacturing unit."
     />
   );
 }

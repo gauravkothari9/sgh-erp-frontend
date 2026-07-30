@@ -52,7 +52,7 @@ export default function CrossSearchPage() {
                     }
                   </div>
                   <div className="p-2">
-                    <p className="text-[10px] font-mono text-brand-primary truncate">{p.instanceCode}</p>
+                    <p className="text-[12px] font-mono text-brand-primary truncate">{p.instanceCode}</p>
                     <p className="text-xs font-semibold text-brand-ink truncate">{p.product?.name}</p>
                   </div>
                 </Link>

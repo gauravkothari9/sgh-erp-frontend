@@ -111,7 +111,7 @@ export function LocalCustomerModal({ isOpen, onClose, customer, onSaved }) {
           <div>
             <label className="label">Tags</label>
             <input value={form.tags} onChange={set('tags')} className="input" placeholder="VIP, Dealer, Architect" />
-            <p className="text-[10px] text-gray-400 mt-0.5">Comma separated</p>
+            <p className="text-[12px] text-gray-400 mt-0.5">Comma separated</p>
           </div>
           <div>
             <label className="label">Notes</label>
@@ -204,7 +204,7 @@ export default function LocalCustomers() {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="font-bold text-gray-800 truncate">{c.name}</p>
-                  {c.companyName && <p className="text-[11px] text-gray-400 truncate">{c.companyName}</p>}
+                  {c.companyName && <p className="text-[13px] text-gray-400 truncate">{c.companyName}</p>}
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   {canUpdate && (
@@ -238,7 +238,7 @@ export default function LocalCustomers() {
               {c.tags?.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {c.tags.map((t) => (
-                    <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">{t}</span>
+                    <span key={t} className="text-[12px] px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">{t}</span>
                   ))}
                 </div>
               )}

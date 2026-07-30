@@ -109,7 +109,7 @@ export default function Container() {
         {/* Desktop: full stage-breakdown table */}
         <div className="hidden md:block overflow-x-auto border border-gray-300 rounded-xl">
           <table className="w-full min-w-[48rem] text-sm border-collapse">
-            <thead className="bg-brand-50/60 text-[11px] uppercase tracking-wide text-gray-500">
+            <thead className="bg-brand-50/60 text-[13px] uppercase tracking-wide text-gray-500">
               <tr>
                 <th className="border border-gray-300 px-3 py-2 text-left">Image</th>
                 <th className="border border-gray-300 px-3 py-2 text-left">Item</th>
@@ -167,7 +167,7 @@ export default function Container() {
                   <div className="text-gray-500 text-xs line-clamp-2">{it.itemDescription}</div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-[10px] uppercase tracking-wide text-gray-400">Left</div>
+                  <div className="text-[12px] uppercase tracking-wide text-gray-400">Left</div>
                   <div className="font-bold tabular-nums text-sm">
                     {it.pending === 0 ? <span className="text-emerald-700">0 ✓</span> : <span className="text-amber-700">{it.pending}</span>}
                   </div>
@@ -239,7 +239,7 @@ export default function Container() {
                 <div className="flex items-center justify-between gap-3 sm:gap-4">
                   <div className="flex items-center flex-wrap gap-x-2 gap-y-1 min-w-0">
                     <span className="font-mono font-bold text-brand-800 text-sm">{o.orderNumber}</span>
-                    <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-semibold">{o.orderStatus}</span>
+                    <span className="text-[12px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-semibold">{o.orderStatus}</span>
                     <span className="text-xs text-gray-400">{formatDate(o.orderDate)}</span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
@@ -312,7 +312,7 @@ export default function Container() {
                   <Folder size={20} className="text-brand-500 shrink-0" />
                   <span className="font-mono font-bold text-brand-800 text-sm">{f.fileNumber}</span>
                   <span className="text-gray-500 text-sm truncate">{f.customerName}</span>
-                  <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-semibold">{f.orders} order{f.orders === 1 ? '' : 's'}</span>
+                  <span className="text-[12px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-semibold">{f.orders} order{f.orders === 1 ? '' : 's'}</span>
                 </div>
                 {f.complete ? (
                   <span className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full shrink-0 self-start sm:self-auto">

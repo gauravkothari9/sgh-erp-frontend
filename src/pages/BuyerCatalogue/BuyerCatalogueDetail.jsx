@@ -484,7 +484,7 @@ export default function BuyerCatalogueDetail() {
                                 <ZoomIn size={18} className="text-white" />
                               </span>
                               {item.images?.length > 1 && (
-                                <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-brand-600 text-white px-1.5 py-0.5 rounded">
+                                <span className="absolute bottom-1 right-1 text-[12px] font-bold bg-brand-600 text-white px-1.5 py-0.5 rounded">
                                   {item.images.length} pics
                                 </span>
                               )}
@@ -500,7 +500,7 @@ export default function BuyerCatalogueDetail() {
                         <Link
                           to={`/office/buyer-catalogue/${encodeURIComponent(fileNumber)}/product/${encodeURIComponent(item.sku)}`}
                           state={{ buyer: catalogue.buyer }}
-                          className="font-bold text-brand-700 bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 px-2 py-1 rounded font-mono text-[11px] transition-colors"
+                          className="font-bold text-brand-700 bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 px-2 py-1 rounded font-mono text-[13px] transition-colors"
                         >
                           {item.sku}
                         </Link>
@@ -543,12 +543,12 @@ export default function BuyerCatalogueDetail() {
                         <td className="border border-brand-100 px-2 py-2 align-top text-gray-600">{item.itemCondition || dash}</td>
                       )}
                       {cols.hsn && (
-                        <td className="border border-brand-100 px-2 py-2 align-top text-gray-600 font-mono text-[11px]">
+                        <td className="border border-brand-100 px-2 py-2 align-top text-gray-600 font-mono text-[13px]">
                           {item.hsnCode || dash}
                         </td>
                       )}
                       {cols.dimensions && (
-                        <td className="border border-brand-100 px-2 py-2 align-top text-gray-600 text-[11px]">
+                        <td className="border border-brand-100 px-2 py-2 align-top text-gray-600 text-[13px]">
                           {item.dimensions && (item.dimensions.length || item.dimensions.width || item.dimensions.height)
                             ? `${item.dimensions.length || 0} × ${item.dimensions.width || 0} × ${item.dimensions.height || 0} ${item.dimensions.unit || 'cm'}`
                             : dash}
@@ -568,7 +568,7 @@ export default function BuyerCatalogueDetail() {
                         <td className="border border-brand-100 px-2 py-2 align-top text-gray-600">
                           <div className="flex flex-col gap-1.5">
                             {item.barcode?.text && (
-                              <span className="font-mono text-[11px]">
+                              <span className="font-mono text-[13px]">
                                 {item.barcode.text}
                               </span>
                             )}
@@ -628,10 +628,10 @@ export default function BuyerCatalogueDetail() {
                       )}
                       <td className="border border-brand-100 px-2 py-2 align-top">
                         <div className="flex flex-col items-center">
-                          <span className="bg-brand-50 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded border border-brand-200">
+                          <span className="bg-brand-50 text-brand-700 text-[12px] font-bold px-2 py-0.5 rounded border border-brand-200">
                             {item.totalTimesOrdered} orders
                           </span>
-                          <span className="text-[10px] text-gray-400 mt-1 whitespace-nowrap">
+                          <span className="text-[12px] text-gray-400 mt-1 whitespace-nowrap">
                             {item.totalQuantityOrdered} pcs total
                           </span>
                         </div>
@@ -757,7 +757,7 @@ export default function BuyerCatalogueDetail() {
                 </div>
 
                 {lines.length > 0 && (
-                  <dl className="mt-2 pt-2 border-t border-gray-100 space-y-1 text-[11px]">
+                  <dl className="mt-2 pt-2 border-t border-gray-100 space-y-1 text-[13px]">
                     {lines.map(([label, value]) => (
                       <div key={label} className="flex gap-2">
                         <dt className="text-gray-400 shrink-0 w-28">{label}</dt>
@@ -850,7 +850,7 @@ export default function BuyerCatalogueDetail() {
                         <ZoomIn size={13} />
                       </button>
                       {item.images?.length > 1 && (
-                        <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-black/60 text-white px-1.5 py-0.5 rounded">
+                        <span className="absolute bottom-2 left-2 text-[12px] font-bold bg-black/60 text-white px-1.5 py-0.5 rounded">
                           {item.images.length} photos
                         </span>
                       )}
@@ -864,7 +864,7 @@ export default function BuyerCatalogueDetail() {
 
                 {/* Card body */}
                 <div className="p-3 space-y-1">
-                  <div className="flex items-center gap-1 text-[10px]">
+                  <div className="flex items-center gap-1 text-[12px]">
                     <span className="font-mono font-bold text-brand-700 bg-brand-50 border border-brand-200 px-1.5 py-0.5 rounded">
                       {item.sku}
                     </span>
@@ -880,13 +880,13 @@ export default function BuyerCatalogueDetail() {
                   >
                     {item.itemDescription || '—'}
                   </p>
-                  <p className="text-[10px] text-gray-500">
+                  <p className="text-[12px] text-gray-500">
                     {hasDims
                       ? `${dims.length || 0} × ${dims.width || 0} × ${dims.height || 0} ${dims.unit || 'cm'}`
                       : 'No size'}
                   </p>
                   <div className="flex items-center justify-between pt-1.5 border-t border-gray-100">
-                    <span className="text-[10px] text-gray-400">
+                    <span className="text-[12px] text-gray-400">
                       {item.totalTimesOrdered} orders
                     </span>
                     <span className="text-xs font-bold text-brand-700">
@@ -937,7 +937,7 @@ export default function BuyerCatalogueDetail() {
             </div>
 
             <div className="border border-gray-100 rounded-lg overflow-hidden">
-              <div className="bg-gray-50 p-3 grid grid-cols-4 gap-2 sm:gap-4 text-[10px] sm:text-xs font-semibold text-gray-500 uppercase">
+              <div className="bg-gray-50 p-3 grid grid-cols-4 gap-2 sm:gap-4 text-[12px] sm:text-xs font-semibold text-gray-500 uppercase">
                 <div>Date</div>
                 <div>Order #</div>
                 <div className="text-right">Avg. Qty</div>

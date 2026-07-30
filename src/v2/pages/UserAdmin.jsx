@@ -113,16 +113,16 @@ export default function UserAdminPage() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-semibold text-brand-ink truncate">{u.fullName}</p>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-brand-primary/10 text-brand-primary font-mono">
+                  <span className="text-[12px] px-1.5 py-0.5 rounded bg-brand-primary/10 text-brand-primary font-mono">
                     {u.role}
                   </span>
                   {!u.isActive && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-brand-error/10 text-brand-error">
+                    <span className="text-[12px] px-1.5 py-0.5 rounded bg-brand-error/10 text-brand-error">
                       Inactive
                     </span>
                   )}
                 </div>
-                <p className="text-[11px] text-brand-inkMuted flex items-center gap-2 flex-wrap mt-0.5">
+                <p className="text-[13px] text-brand-inkMuted flex items-center gap-2 flex-wrap mt-0.5">
                   <span className="inline-flex items-center gap-1"><Mail size={10} />{u.email}</span>
                   {u.department && (
                     <span className="inline-flex items-center gap-1"><Building2 size={10} />{u.department}</span>
@@ -433,7 +433,7 @@ function UserForm({ initial, parents, childrenByParent, onClose, onSaved }) {
                 <Shield size={12} /> Module access
               </h3>
               {form.role === 'ADMIN' && (
-                <span className="text-[10px] text-brand-inkMuted">Admins have access to everything</span>
+                <span className="text-[12px] text-brand-inkMuted">Admins have access to everything</span>
               )}
             </div>
             <div className="space-y-3">
@@ -443,12 +443,12 @@ function UserForm({ initial, parents, childrenByParent, onClose, onSaved }) {
                 return (
                   <div key={group}>
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-[11px] font-semibold text-brand-ink">{group}</p>
+                      <p className="text-[13px] font-semibold text-brand-ink">{group}</p>
                       <button
                         type="button"
                         onClick={() => setAllInGroup(keys, !allOn)}
                         disabled={form.role === 'ADMIN'}
-                        className="text-[10px] text-brand-primary hover:underline disabled:opacity-50"
+                        className="text-[12px] text-brand-primary hover:underline disabled:opacity-50"
                       >
                         {allOn ? 'Clear all' : 'Select all'}
                       </button>

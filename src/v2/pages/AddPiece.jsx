@@ -74,7 +74,7 @@ export default function AddPiecePage() {
           hidden
           onChange={(e) => setFiles((p) => [...p, ...Array.from(e.target.files || [])])}
         />
-        <p className="text-[11px] text-brand-inkMuted flex items-center gap-1"><ImagePlus size={11} /> Tap "Add" to choose photos.</p>
+        <p className="text-[13px] text-brand-inkMuted flex items-center gap-1"><ImagePlus size={11} /> Tap "Add" to choose photos.</p>
       </div>
 
       <Field label="Product">

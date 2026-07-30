@@ -1,14 +1,14 @@
 import { Factory } from 'lucide-react';
 import StageView from '../../components/production/StageView';
 
-// Production — every finalized order's items, grouped into file folders (same
-// file system as Order Management). Unassigned items can be routed to
-// Kakani / Jhalamand; routed items advance stage by stage (by quantity).
+// Production — three levels: customer file → its orders → each order's items.
+// Open a file to see every order in it; each order lists its own items, which
+// you route to Kakani / Jhalamand and move through their stages.
 export default function ProductionBoard() {
   return (
     <StageView
       title="Production"
-      subtitle="Finalized orders — assign each item to Kakani / Jhalamand, then move it through its stages"
+      subtitle="Finalized orders by customer file — open a file to see its orders and their items"
       icon={Factory}
       filters={{}}
       mode="overview"

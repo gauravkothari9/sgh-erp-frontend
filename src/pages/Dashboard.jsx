@@ -38,9 +38,9 @@ const Metric = ({ icon: Icon, label, value, sub, tone = 'brand', onClick, alert 
       <span className={`absolute inset-y-0 left-0 w-1 ${alert ? 'bg-red-500' : 'bg-transparent'}`} />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[11px] uppercase tracking-wider text-gray-400 truncate">{label}</p>
+          <p className="text-[13px] uppercase tracking-wider text-gray-400 truncate">{label}</p>
           <p className={`text-2xl font-bold mt-1 tabular-nums ${alert ? 'text-red-600' : 'text-gray-900'}`}>{value}</p>
-          {sub && <p className="text-[11px] text-gray-400 mt-0.5 truncate">{sub}</p>}
+          {sub && <p className="text-[13px] text-gray-400 mt-0.5 truncate">{sub}</p>}
         </div>
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${alert ? 'bg-red-50 text-red-600' : tones[tone]}`}>
           <Icon size={17} strokeWidth={1.8} />
@@ -56,7 +56,7 @@ const Section = ({ title, subtitle, action, children }) => (
     <div className="flex items-end justify-between gap-3">
       <div>
         <h2 className="text-sm font-bold text-espresso-900 tracking-tight">{title}</h2>
-        {subtitle && <p className="text-[11px] text-gray-400">{subtitle}</p>}
+        {subtitle && <p className="text-[13px] text-gray-400">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -65,7 +65,7 @@ const Section = ({ title, subtitle, action, children }) => (
 );
 
 const SectionLink = ({ to, label, navigate }) => (
-  <button onClick={() => navigate(to)} className="text-[11px] font-semibold text-brand-700 hover:text-brand-800 flex items-center gap-0.5 shrink-0">
+  <button onClick={() => navigate(to)} className="text-[13px] font-semibold text-brand-700 hover:text-brand-800 flex items-center gap-0.5 shrink-0">
     {label} <ArrowRight size={12} />
   </button>
 );
@@ -81,7 +81,7 @@ const Pill = ({ status }) => {
     : status === 'Refund Due' ? 'bg-blue-50 text-blue-700 border-blue-200'
     : status === 'Unpaid' || status === 'Cancelled' ? 'bg-red-50 text-red-700 border-red-200'
     : 'bg-linen-100 text-gray-600 border-linen-300';
-  return <span className={`text-[10px] px-2 py-0.5 rounded-full border whitespace-nowrap ${tone}`}>{status}</span>;
+  return <span className={`text-[12px] px-2 py-0.5 rounded-full border whitespace-nowrap ${tone}`}>{status}</span>;
 };
 
 const ModuleTile = ({ icon: Icon, label, desc, onClick }) => (
@@ -94,7 +94,7 @@ const ModuleTile = ({ icon: Icon, label, desc, onClick }) => (
     </div>
     <div className="flex-1 min-w-0">
       <p className="text-sm font-bold text-gray-800 truncate">{label}</p>
-      <p className="text-[11px] text-gray-400 truncate">{desc}</p>
+      <p className="text-[13px] text-gray-400 truncate">{desc}</p>
     </div>
     <ArrowRight size={14} className="text-gray-300 group-hover:text-brand-600 transition-colors shrink-0" />
   </button>
@@ -174,7 +174,7 @@ export default function Dashboard() {
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <div className="rounded-2xl bg-white border border-linen-300 shadow-card px-6 py-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] uppercase tracking-widest text-gray-400">{today()}</p>
+          <p className="text-[13px] uppercase tracking-widest text-gray-400">{today()}</p>
           <h1 className="text-2xl font-serif font-bold text-espresso-900 mt-1 tracking-tight">
             Welcome back, {user?.fullName?.split(' ')[0] || 'there'}
           </h1>
@@ -184,7 +184,7 @@ export default function Dashboard() {
               : 'Everything your modules cover, in one place.'}
           </p>
         </div>
-        <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-linen-100 text-espresso-600 border border-linen-300">
+        <span className="text-[12px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-linen-100 text-espresso-600 border border-linen-300">
           {user?.role}{user?.department ? ` · ${user.department}` : ''}
         </span>
       </div>
@@ -224,7 +224,7 @@ export default function Dashboard() {
             <Panel>
               <div className="overflow-x-auto">
               <table className="w-full text-sm min-w-[38rem]">
-                <thead className="bg-linen-50 text-[10px] uppercase tracking-wider text-gray-400">
+                <thead className="bg-linen-50 text-[12px] uppercase tracking-wider text-gray-400">
                   <tr>
                     <th className="px-4 py-2.5 text-left font-semibold">Order</th>
                     <th className="px-4 py-2.5 text-left font-semibold">Customer</th>
@@ -266,7 +266,7 @@ export default function Dashboard() {
             </div>
 
             <Panel className="lg:col-span-2 p-4">
-              <p className="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Units per stage</p>
+              <p className="text-[13px] uppercase tracking-wider text-gray-400 mb-3">Units per stage</p>
               {data.production.byStage?.length === 0 ? (
                 <p className="text-sm text-gray-400 py-6 text-center">Nothing on the board right now.</p>
               ) : (
@@ -339,7 +339,7 @@ export default function Dashboard() {
             <Panel>
               <div className="overflow-x-auto">
               <table className="w-full text-sm min-w-[38rem]">
-                <thead className="bg-linen-50 text-[10px] uppercase tracking-wider text-gray-400">
+                <thead className="bg-linen-50 text-[12px] uppercase tracking-wider text-gray-400">
                   <tr>
                     <th className="px-4 py-2.5 text-left font-semibold">Order</th>
                     <th className="px-4 py-2.5 text-left font-semibold">Customer</th>

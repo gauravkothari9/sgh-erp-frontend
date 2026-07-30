@@ -77,7 +77,7 @@ export default function CatalogueSelectionBar() {
             <div className="space-y-3">
               {groups.map((g) => (
                 <div key={g.fileNumber || 'unknown'}>
-                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider font-bold text-white/80 mb-1.5">
+                  <div className="flex items-center gap-2 text-[13px] uppercase tracking-wider font-bold text-white/80 mb-1.5">
                     <FolderOpen size={12} className="shrink-0" />
                     <span className="truncate">{g.fileNumber || 'Unknown file'}</span>
                     {g.buyerName && (
@@ -85,7 +85,7 @@ export default function CatalogueSelectionBar() {
                         — {g.buyerName}
                       </span>
                     )}
-                    <span className="ml-auto shrink-0 bg-white/15 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                    <span className="ml-auto shrink-0 bg-white/15 text-white text-[12px] px-2 py-0.5 rounded-full font-bold">
                       {g.items.length}
                     </span>
                   </div>

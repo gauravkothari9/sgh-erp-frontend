@@ -8,9 +8,12 @@
     @apply box-border;
   }
 
-  /* Slightly larger base — scales all rem-based sizing up (16px → 18px). */
+  /* Larger base — scales all rem-based sizing up (16px → 21px, ~17% over the
+     browser default). Tailwind's text-xs/sm/base and every rem utility ride
+     this. Fixed pixel sizes (text-[10px], text-[11px]) do NOT scale — they are
+     nudged individually where they matter. */
   html {
-    font-size: 18px;
+    font-size: 21px;
   }
 
   body {

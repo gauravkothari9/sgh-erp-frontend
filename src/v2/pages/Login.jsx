@@ -106,7 +106,7 @@ function SetupAdminForm({ onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="rounded-lg bg-brand-primary/10 border border-brand-primary/30 px-3 py-2 text-[11px] text-brand-ink">
+      <div className="rounded-lg bg-brand-primary/10 border border-brand-primary/30 px-3 py-2 text-[13px] text-brand-ink">
         No administrator account exists yet. Create the first admin to get started.
       </div>
 

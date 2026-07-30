@@ -184,7 +184,7 @@ export default function PhotoPicker({
         >
           <Icon size={26} className="text-brand-600" />
           <p className="text-sm font-semibold text-gray-700">{label}</p>
-          {hint && <p className="text-[10px] text-gray-400 uppercase tracking-wider">{hint}</p>}
+          {hint && <p className="text-[12px] text-gray-400 uppercase tracking-wider">{hint}</p>}
         </button>
         {overlays}
       </>

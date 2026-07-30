@@ -19,7 +19,7 @@ export default function JhalamandOrders() {
         </div>
         <div className="min-w-0">
           <h1 className="page-title">Jhalamand — Orders</h1>
-          <p className="page-subtitle">Items being made / sourced at the Jhalamand unit</p>
+          <p className="page-subtitle">Items made / sourced at Jhalamand, by customer file — open a file to see its orders and their items</p>
         </div>
       </div>
 

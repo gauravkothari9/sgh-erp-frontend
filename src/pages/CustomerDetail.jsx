@@ -169,7 +169,7 @@ export default function CustomerDetail() {
           <div key={s.label} className="card text-center">
             {/* smaller on phones so long currency values don't overflow the tile */}
             <p className="text-base sm:text-2xl font-bold text-gray-900 break-words">{s.value}</p>
-            <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">{s.label}</p>
+            <p className="text-[13px] sm:text-xs text-gray-500 mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>

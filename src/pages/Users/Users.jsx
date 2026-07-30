@@ -208,7 +208,7 @@ export default function Users() {
                       <td className="px-4 py-3 font-medium text-gray-800">
                         {u.fullName}
                         {isSelf && (
-                          <span className="ml-2 text-[10px] bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded">
+                          <span className="ml-2 text-[12px] bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded">
                             you
                           </span>
                         )}
@@ -233,7 +233,7 @@ export default function Users() {
                           {u.role}
                         </span>
                         {u.role === 'Admin' && (
-                          <span className="ml-1.5 text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-semibold">
+                          <span className="ml-1.5 text-[12px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-semibold">
                             Full Access
                           </span>
                         )}
@@ -323,7 +323,7 @@ export default function Users() {
                       <p className="font-semibold text-gray-800 truncate">
                         {u.fullName}
                         {isSelf && (
-                          <span className="ml-2 text-[10px] bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded">
+                          <span className="ml-2 text-[12px] bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded">
                             you
                           </span>
                         )}
@@ -352,7 +352,7 @@ export default function Users() {
                       {u.role}
                     </span>
                     {u.role === 'Admin' && (
-                      <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-semibold">
+                      <span className="text-[12px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-semibold">
                         Full Access
                       </span>
                     )}

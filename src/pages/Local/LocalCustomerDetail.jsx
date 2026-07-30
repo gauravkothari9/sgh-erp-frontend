@@ -69,7 +69,7 @@ export default function LocalCustomerDetail() {
           {c.tags?.length > 0 && (
             <div className="flex flex-wrap gap-1 pt-1">
               {c.tags.map((t) => (
-                <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">{t}</span>
+                <span key={t} className="text-[12px] px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">{t}</span>
               ))}
             </div>
           )}
@@ -78,16 +78,16 @@ export default function LocalCustomerDetail() {
 
         {/* Stats */}
         <div className="card bg-white border border-linen-300 shadow-card">
-          <p className="text-[11px] uppercase tracking-wider text-gray-400">Orders</p>
+          <p className="text-[13px] uppercase tracking-wider text-gray-400">Orders</p>
           <p className="text-2xl font-bold text-gray-800 mt-1 flex items-center gap-2">
             <Receipt size={18} className="text-brand-600" /> {stats?.sales || 0}
           </p>
-          <p className="text-[11px] uppercase tracking-wider text-gray-400 mt-4">Total spent</p>
+          <p className="text-[13px] uppercase tracking-wider text-gray-400 mt-4">Total spent</p>
           <p className="text-xl font-bold text-brand-700 mt-1">{money(stats?.totalSpent)}</p>
         </div>
 
         <div className="card bg-white border border-linen-300 shadow-card">
-          <p className="text-[11px] uppercase tracking-wider text-gray-400">Balance due</p>
+          <p className="text-[13px] uppercase tracking-wider text-gray-400">Balance due</p>
           <p className={`text-2xl font-bold mt-1 flex items-center gap-1 ${stats?.balanceDue > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
             <IndianRupee size={18} /> {Number(stats?.balanceDue || 0).toLocaleString('en-IN')}
           </p>
@@ -107,7 +107,7 @@ export default function LocalCustomerDetail() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[42rem]">
-              <thead className="bg-linen-100 text-[11px] uppercase tracking-wider text-gray-500">
+              <thead className="bg-linen-100 text-[13px] uppercase tracking-wider text-gray-500">
                 <tr>
                   <th className="px-3 py-2 text-left">Order</th>
                   <th className="px-3 py-2 text-left">Date</th>
@@ -130,7 +130,7 @@ export default function LocalCustomerDetail() {
                     <td className="px-3 py-2 text-right font-bold text-gray-800">{money(s.totalAmount)}</td>
                     <td className="px-3 py-2 text-right text-gray-600">{money(s.amountPaid)}</td>
                     <td className="px-3 py-2">
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                      <span className={`text-[12px] px-2 py-0.5 rounded-full border ${
                         s.paymentStatus === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         : s.paymentStatus === 'Partial' ? 'bg-amber-50 text-amber-700 border-amber-200'
                         : 'bg-red-50 text-red-700 border-red-200'

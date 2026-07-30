@@ -59,7 +59,7 @@ function PaymentModal({ isOpen, onClose, sale, onSaved }) {
         <div>
           <label className="label">Total amount paid (₹)</label>
           <input type="number" min="0" value={amountPaid} onChange={(e) => setAmountPaid(e.target.value)} className="input" />
-          <p className="text-[10px] text-gray-400 mt-0.5">Cumulative, not an increment.</p>
+          <p className="text-[12px] text-gray-400 mt-0.5">Cumulative, not an increment.</p>
         </div>
         <div>
           <label className="label">Payment mode</label>
@@ -147,7 +147,7 @@ function ReturnModal({ isOpen, onClose, sale, onSaved }) {
       ) : (
         <div className="space-y-4">
           <table className="w-full text-sm">
-            <thead className="bg-linen-100 text-[11px] uppercase tracking-wider text-gray-500">
+            <thead className="bg-linen-100 text-[13px] uppercase tracking-wider text-gray-500">
               <tr>
                 <th className="px-2 py-2 text-left">Item</th>
                 <th className="px-2 py-2 text-center w-24">Sold</th>
@@ -163,11 +163,11 @@ function ReturnModal({ isOpen, onClose, sale, onSaved }) {
                   <tr key={index}>
                     <td className="px-2 py-2">
                       <p className="font-semibold text-gray-800">{it.name}</p>
-                      <p className="text-[11px] text-gray-400">{it.sku ? `${it.sku} · ` : ''}{money(it.unitPrice)} each</p>
+                      <p className="text-[13px] text-gray-400">{it.sku ? `${it.sku} · ` : ''}{money(it.unitPrice)} each</p>
                     </td>
                     <td className="px-2 py-2 text-center text-gray-600">
                       {max}
-                      {it.returnedQty > 0 && <span className="block text-[10px] text-gray-400">{it.returnedQty} already back</span>}
+                      {it.returnedQty > 0 && <span className="block text-[12px] text-gray-400">{it.returnedQty} already back</span>}
                     </td>
                     <td className="px-2 py-2">
                       <input
@@ -291,7 +291,7 @@ export default function LocalSaleDetail() {
         <div className="flex items-start justify-between border-b border-linen-300 pb-4">
           <div>
             <p className="font-serif font-bold text-xl text-espresso-900">SGH Crafts</p>
-            <p className="text-[11px] text-gray-500 uppercase tracking-widest">Showroom Bill</p>
+            <p className="text-[13px] text-gray-500 uppercase tracking-widest">Showroom Bill</p>
           </div>
           <div className="text-right">
             <p className="font-bold text-gray-800">{sale.saleNumber}</p>
@@ -301,7 +301,7 @@ export default function LocalSaleDetail() {
 
         <div className="grid grid-cols-2 gap-4 py-4 text-sm">
           <div>
-            <p className="text-[11px] uppercase tracking-wider text-gray-400">Billed to</p>
+            <p className="text-[13px] uppercase tracking-wider text-gray-400">Billed to</p>
             <p className="font-bold text-gray-800">{sale.customerName || c.name}</p>
             <p className="text-gray-600">{sale.customerPhone || c.phone}</p>
             {c.address && <p className="text-gray-600">{[c.address, c.city].filter(Boolean).join(', ')}</p>}
@@ -309,7 +309,7 @@ export default function LocalSaleDetail() {
             {c.gstin && <p className="text-gray-600">GSTIN: {c.gstin}</p>}
           </div>
           <div className="text-right">
-            <p className="text-[11px] uppercase tracking-wider text-gray-400">Payment</p>
+            <p className="text-[13px] uppercase tracking-wider text-gray-400">Payment</p>
             <p className="font-semibold text-gray-800">{sale.paymentMode}</p>
             <p className={`font-bold ${sale.balanceDue > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
               {sale.paymentStatus}
@@ -319,7 +319,7 @@ export default function LocalSaleDetail() {
 
         <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[40rem]">
-          <thead className="bg-linen-100 text-[11px] uppercase tracking-wider text-gray-500">
+          <thead className="bg-linen-100 text-[13px] uppercase tracking-wider text-gray-500">
             <tr>
               <th className="px-2 py-2 text-left w-10">#</th>
               <th className="px-2 py-2 text-left w-20">Image</th>
@@ -343,14 +343,14 @@ export default function LocalSaleDetail() {
                 </td>
                 <td className="px-2 py-2">
                   <p className="font-semibold text-gray-800">{it.name}</p>
-                  {it.sku && <p className="text-[11px] text-gray-400">{it.sku}</p>}
-                  {it.comments && <p className="text-[11px] text-gray-500 italic">{it.comments}</p>}
+                  {it.sku && <p className="text-[13px] text-gray-400">{it.sku}</p>}
+                  {it.comments && <p className="text-[13px] text-gray-500 italic">{it.comments}</p>}
                 </td>
                 <td className="px-2 py-2 text-gray-600">{it.size || '—'}</td>
                 <td className="px-2 py-2 text-center text-gray-800">
                   {(it.quantity || 0) - (it.returnedQty || 0)}
                   {it.returnedQty > 0 && (
-                    <span className="block text-[10px] text-red-500">{it.returnedQty} returned</span>
+                    <span className="block text-[12px] text-red-500">{it.returnedQty} returned</span>
                   )}
                 </td>
                 <td className="px-2 py-2 text-right text-gray-600">{money(it.unitPrice)}</td>
@@ -398,7 +398,7 @@ export default function LocalSaleDetail() {
 
         {sale.returns?.length > 0 && (
           <div className="border-t border-linen-200 pt-3 mt-3">
-            <p className="text-[11px] uppercase tracking-wider text-gray-400 mb-1">Returns</p>
+            <p className="text-[13px] uppercase tracking-wider text-gray-400 mb-1">Returns</p>
             {sale.returns.map((r, i) => (
               <p key={i} className="text-xs text-gray-600">
                 {day(r.at)} — {r.items.map((x) => `${x.qty} × ${x.name} → ${x.branch} ${x.zone}`).join(', ')}
@@ -409,7 +409,7 @@ export default function LocalSaleDetail() {
         )}
 
         {sale.notes && <p className="text-xs text-gray-500 border-t border-linen-200 pt-3 mt-3">{sale.notes}</p>}
-        <p className="text-[10px] text-gray-400 text-center pt-4">Thank you for your purchase.</p>
+        <p className="text-[12px] text-gray-400 text-center pt-4">Thank you for your purchase.</p>
       </div>
 
       <PaymentModal isOpen={payOpen} onClose={() => setPayOpen(false)} sale={sale} onSaved={fetchSale} />

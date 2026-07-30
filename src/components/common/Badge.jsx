@@ -40,7 +40,7 @@ export const OrderTypeBadge = ({ type }) => {
 export const CountBadge = ({ count, className = '' }) => (
   <span
     className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5
-                text-[11px] font-bold rounded-full bg-brand-100 text-brand-700 ${className}`}
+                text-[13px] font-bold rounded-full bg-brand-100 text-brand-700 ${className}`}
   >
     {count}
   </span>

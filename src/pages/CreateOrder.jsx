@@ -810,7 +810,7 @@ export default function CreateOrder() {
       {/* Step 1: Customer */}
       <div className="card">
         <h2 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-          <span className="w-5 h-5 rounded-full bg-brand-600 text-white text-[11px] flex items-center justify-center font-bold">1</span>
+          <span className="w-5 h-5 rounded-full bg-brand-600 text-white text-[13px] flex items-center justify-center font-bold">1</span>
           Customer
         </h2>
         {selectedCustomer ? (
@@ -891,7 +891,7 @@ export default function CreateOrder() {
       {/* Step 2: Order Details */}
       <div className="card">
         <h2 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <span className="w-5 h-5 rounded-full bg-brand-600 text-white text-[11px] flex items-center justify-center font-bold">2</span>
+          <span className="w-5 h-5 rounded-full bg-brand-600 text-white text-[13px] flex items-center justify-center font-bold">2</span>
           Order Details
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -912,7 +912,7 @@ export default function CreateOrder() {
       <div className="card">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-brand-600 text-white text-[11px] flex items-center justify-center font-bold">3</span>
+            <span className="w-5 h-5 rounded-full bg-brand-600 text-white text-[13px] flex items-center justify-center font-bold">3</span>
             Line Items ({items.length})
           </h2>
           <button onClick={addItem} className="btn-secondary btn btn-sm"><Plus size={14} /> Add Item</button>
@@ -1335,7 +1335,7 @@ export default function CreateOrder() {
                                       className="w-full h-full object-cover rounded border-2 border-gray-200 bg-white"
                                     />
                                     {allImages.length > 1 && (
-                                      <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[9px] px-1 rounded font-bold">
+                                      <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[11px] px-1 rounded font-bold">
                                         +{allImages.length - 1}
                                       </span>
                                     )}
@@ -1635,7 +1635,7 @@ export default function CreateOrder() {
                         }}
                       />
                     </div>
-                    <p className="text-[10px] text-gray-400 mt-1">Press Enter to post a text comment.</p>
+                    <p className="text-[12px] text-gray-400 mt-1">Press Enter to post a text comment.</p>
                   </div>
 
                   {/* Factory notes */}

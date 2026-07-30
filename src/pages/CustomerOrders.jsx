@@ -266,7 +266,7 @@ export default function CustomerOrders() {
                   <OrderTypeBadge type={order.orderType} />
                   <CountBadge count={order.items?.length || 0} />
                   {order.containerSize && (
-                    <span className="text-[11px] text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-full">
+                    <span className="text-[13px] text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-full">
                       {order.containerSize}
                     </span>
                   )}

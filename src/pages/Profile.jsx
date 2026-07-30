@@ -16,7 +16,7 @@ const Card = ({ title, subtitle, children, footer }) => (
   <div className="bg-white border border-linen-300 rounded-xl shadow-card overflow-hidden">
     <div className="px-5 py-3.5 border-b border-linen-200 bg-linen-50">
       <p className="text-sm font-bold text-espresso-900">{title}</p>
-      {subtitle && <p className="text-[11px] text-gray-400">{subtitle}</p>}
+      {subtitle && <p className="text-[13px] text-gray-400">{subtitle}</p>}
     </div>
     <div className="p-5">{children}</div>
     {footer && <div className="px-5 py-3 border-t border-linen-200 bg-linen-50 flex justify-end gap-2">{footer}</div>}
@@ -103,13 +103,13 @@ export default function Profile() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+          <span className={`text-[12px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
             admin ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-linen-100 text-espresso-600 border-linen-300'
           }`}>
             {user?.role}
           </span>
           {user?.lastLogin && (
-            <span className="text-[11px] text-gray-400 flex items-center gap-1">
+            <span className="text-[13px] text-gray-400 flex items-center gap-1">
               <Calendar size={12} /> Last login {day(user.lastLogin)}
             </span>
           )}
@@ -161,11 +161,11 @@ export default function Profile() {
 
             <div className="grid grid-cols-2 gap-3 pt-2 border-t border-linen-200">
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-gray-400">Role</p>
+                <p className="text-[13px] uppercase tracking-wider text-gray-400">Role</p>
                 <p className="text-sm font-semibold text-gray-800">{user?.role}</p>
               </div>
               <div>
-                <p className="text-[11px] uppercase tracking-wider text-gray-400">Department</p>
+                <p className="text-[13px] uppercase tracking-wider text-gray-400">Department</p>
                 <p className="text-sm font-semibold text-gray-800">{user?.department || '—'}</p>
               </div>
             </div>
@@ -216,9 +216,9 @@ export default function Profile() {
               </div>
             </div>
             {pw.confirm && pw.confirm !== pw.newPassword && (
-              <p className="text-[11px] text-red-600">Passwords do not match.</p>
+              <p className="text-[13px] text-red-600">Passwords do not match.</p>
             )}
-            <p className="text-[11px] text-gray-400">
+            <p className="text-[13px] text-gray-400">
               You'll stay signed in on this device after changing it.
             </p>
           </div>
@@ -241,11 +241,11 @@ export default function Profile() {
           <div className="space-y-5">
             {Object.entries(byDept).map(([dept, mods]) => (
               <div key={dept}>
-                <p className="text-[11px] uppercase tracking-wider text-gray-400 mb-2">{dept}</p>
+                <p className="text-[13px] uppercase tracking-wider text-gray-400 mb-2">{dept}</p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="text-[10px] uppercase tracking-wider text-gray-400">
+                      <tr className="text-[12px] uppercase tracking-wider text-gray-400">
                         <th className="text-left font-semibold py-1.5">Module</th>
                         {ACTIONS.map((a) => (
                           <th key={a} className="text-center font-semibold py-1.5 w-20">{a}</th>

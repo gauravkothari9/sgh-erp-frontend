@@ -69,7 +69,7 @@ export default function V2Shell({ children }) {
                 <NavLink
                   to={t.to}
                   className={({ isActive }) =>
-                    `flex-1 flex flex-col items-center justify-center text-[10px] gap-1 ${
+                    `flex-1 flex flex-col items-center justify-center text-[12px] gap-1 ${
                       t.fab
                         ? 'relative -mt-5 mx-2 mb-2 rounded-full bg-brand-primary text-white shadow-lg'
                         : isActive

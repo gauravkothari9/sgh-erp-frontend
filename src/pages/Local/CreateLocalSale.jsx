@@ -145,7 +145,7 @@ export default function CreateLocalSale() {
                     className="w-full text-left px-3 py-2 hover:bg-linen-50 border-b border-linen-200 last:border-0"
                   >
                     <p className="text-sm font-semibold text-gray-800">{c.name}</p>
-                    <p className="text-[11px] text-gray-400">{c.phone}{c.city ? ` · ${c.city}` : ''}</p>
+                    <p className="text-[13px] text-gray-400">{c.phone}{c.city ? ` · ${c.city}` : ''}</p>
                   </button>
                 ))}
               </div>
@@ -166,7 +166,7 @@ export default function CreateLocalSale() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[56rem]">
-              <thead className="bg-linen-100 text-[11px] uppercase tracking-wider text-gray-500">
+              <thead className="bg-linen-100 text-[13px] uppercase tracking-wider text-gray-500">
                 <tr>
                   <th className="px-3 py-2 text-left w-12">#</th>
                   <th className="px-3 py-2 text-left w-24">Image</th>
@@ -193,7 +193,7 @@ export default function CreateLocalSale() {
                       </td>
                       <td className="px-3 py-2">
                         <p className="font-semibold text-gray-800">{it.name}</p>
-                        <p className="text-[11px] text-gray-400">
+                        <p className="text-[13px] text-gray-400">
                           {it.sku ? `${it.sku} · ` : ''}{it.size || '—'}{it.branch ? ` · ${it.branch} ${it.zone}` : ''}
                         </p>
                       </td>
@@ -207,7 +207,7 @@ export default function CreateLocalSale() {
                           className={`input py-1.5 text-sm ${over ? 'border-red-400' : ''}`}
                         />
                         {it.stock !== undefined && (
-                          <p className={`text-[10px] mt-0.5 ${over ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+                          <p className={`text-[12px] mt-0.5 ${over ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
                             {over ? `Only ${it.stock} in stock` : `${it.stock} available`}
                           </p>
                         )}

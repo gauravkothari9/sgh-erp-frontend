@@ -32,7 +32,7 @@ function StockRows({ rows, onChange }) {
     <div>
       <div className="flex items-center justify-between">
         <label className="label">Stock by zone</label>
-        <span className="text-[11px] text-gray-500">Total qty: <strong className="text-gray-800">{total}</strong></span>
+        <span className="text-[13px] text-gray-500">Total qty: <strong className="text-gray-800">{total}</strong></span>
       </div>
       <div className="space-y-2">
         {rows.map((row, idx) => {
@@ -266,7 +266,7 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
                   placeholder="0"
                   className="input"
                 />
-                <p className="text-[10px] text-gray-400 mt-0.5 capitalize">{key}</p>
+                <p className="text-[12px] text-gray-400 mt-0.5 capitalize">{key}</p>
               </div>
             ))}
             <div>
@@ -274,7 +274,7 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
                 <option value="cm">cm</option>
                 <option value="inch">inch</option>
               </select>
-              <p className="text-[10px] text-gray-400 mt-0.5">Unit</p>
+              <p className="text-[12px] text-gray-400 mt-0.5">Unit</p>
             </div>
           </div>
         </div>
@@ -292,7 +292,7 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
               placeholder="0"
               className="input"
             />
-            <p className="text-[10px] text-gray-400 mt-0.5">Reference only — never billed</p>
+            <p className="text-[12px] text-gray-400 mt-0.5">Reference only — never billed</p>
           </div>
           <div>
             <label className="label">Local price (₹)</label>
@@ -304,7 +304,7 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
               placeholder="0"
               className="input"
             />
-            <p className="text-[10px] text-gray-400 mt-0.5">Billed to walk-in customers</p>
+            <p className="text-[12px] text-gray-400 mt-0.5">Billed to walk-in customers</p>
           </div>
         </div>
       </div>
@@ -382,7 +382,7 @@ function TransferModal({ isOpen, onClose, product, branch, zone, onMoved }) {
           <label className="label">Qty to move</label>
           <input type="number" min="1" max={available} value={qty} onChange={(e) => setQty(e.target.value)} className="input" />
         </div>
-        <p className="text-[11px] text-gray-400">Current spread: {stockSummary(product) || '—'}</p>
+        <p className="text-[13px] text-gray-400">Current spread: {stockSummary(product) || '—'}</p>
       </div>
     </Modal>
   );
@@ -414,27 +414,27 @@ function ViewProductModal({ product, branch, zone, isOpen, onClose, selected, on
         </div>
         <dl className="grid grid-cols-2 gap-3 text-sm">
           <div>
-            <dt className="text-[11px] uppercase tracking-wider text-gray-400">SKU</dt>
+            <dt className="text-[13px] uppercase tracking-wider text-gray-400">SKU</dt>
             <dd className="font-semibold text-gray-800">{product.sku || '—'}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-wider text-gray-400">Dimensions</dt>
+            <dt className="text-[13px] uppercase tracking-wider text-gray-400">Dimensions</dt>
             <dd className="font-semibold text-gray-800">{productSizeLabel(product) || '—'}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-wider text-gray-400">Local Price</dt>
+            <dt className="text-[13px] uppercase tracking-wider text-gray-400">Local Price</dt>
             <dd className="font-bold text-brand-700">₹ {Number(product.localPrice || 0).toLocaleString('en-IN')}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-wider text-gray-400">Base Price</dt>
+            <dt className="text-[13px] uppercase tracking-wider text-gray-400">Base Price</dt>
             <dd className="font-semibold text-gray-800">₹ {Number(product.basePrice || 0).toLocaleString('en-IN')}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-wider text-gray-400">In this zone</dt>
+            <dt className="text-[13px] uppercase tracking-wider text-gray-400">In this zone</dt>
             <dd className="font-semibold text-gray-800">{zoneQtyOf(product, branch, zone)} of {totalQtyOf(product)} total</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-wider text-gray-400">Stock spread</dt>
+            <dt className="text-[13px] uppercase tracking-wider text-gray-400">Stock spread</dt>
             <dd className="font-semibold text-gray-800">{stockSummary(product) || '—'}</dd>
           </div>
         </dl>
@@ -637,7 +637,9 @@ export default function ShowroomZone({ branch, zone }) {
                 </span>
 
                 {canUpdate && (
-                  <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                  // Always visible — hover-only hid these on touch devices
+                  // (tablets in the showroom), so staff saw no action buttons.
+                  <div className="absolute top-2 right-2 z-10 flex gap-1">
                     <button
                       onClick={(e) => { e.stopPropagation(); setTransferTarget(p); }}
                       onPointerDown={(e) => e.stopPropagation()}
@@ -659,13 +661,18 @@ export default function ShowroomZone({ branch, zone }) {
 
                 <div className="aspect-square bg-linen-100 flex items-center justify-center overflow-hidden">
                   {p.image ? (
-                    <img src={resolveMediaSrc(p.image)} onError={imgErrorFallback} alt={p.name} className="w-full h-full object-cover" />
+                    <img
+                      src={resolveMediaSrc(p.image)}
+                      onError={imgErrorFallback}
+                      alt={p.name}
+                      className={`w-full h-full object-cover transition ${here === 0 ? 'grayscale opacity-60' : ''}`}
+                    />
                   ) : <Package size={28} className="text-gray-300" />}
                 </div>
 
                 <div className="p-3">
                   {(p.sku || p.collectionName) && (
-                    <p className="text-[10px] font-semibold tracking-wider truncate">
+                    <p className="text-[12px] font-semibold tracking-wider truncate">
                       {p.collectionName && <span className="text-brand-600 uppercase">{p.collectionName}</span>}
                       {p.collectionName && p.sku && <span className="text-gray-300"> · </span>}
                       {p.sku && <span className="text-gray-400">{p.sku}</span>}
@@ -673,23 +680,32 @@ export default function ShowroomZone({ branch, zone }) {
                   )}
                   <p className="font-bold text-gray-800 text-sm truncate" title={p.name}>{p.name}</p>
                   <p className="text-xs text-gray-500 truncate">{productSizeLabel(p) || '—'}</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5" title={stockSummary(p)}>
-                    <strong className="text-gray-800">{here}</strong> here
-                    {total !== here && <span className="text-gray-400"> · {total} total</span>}
-                  </p>
+                  {here === 0 ? (
+                    <p className="mt-0.5" title={stockSummary(p)}>
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[12px] font-bold uppercase tracking-wide bg-red-100 text-red-700">
+                        Out of stock
+                      </span>
+                      {total > 0 && <span className="text-[13px] text-gray-400"> · {total} in other zones</span>}
+                    </p>
+                  ) : (
+                    <p className="text-[13px] text-gray-500 mt-0.5" title={stockSummary(p)}>
+                      <strong className="text-gray-800">{here}</strong> here
+                      {total !== here && <span className="text-gray-400"> · {total} total</span>}
+                    </p>
+                  )}
                   <div className="flex items-end justify-between mt-1">
                     <div className="min-w-0">
                       {p.localPrice ? (
                         <p className="text-sm font-bold text-brand-700 truncate">
                           ₹ {Number(p.localPrice).toLocaleString('en-IN')}{' '}
-                          <span className="text-[10px] font-medium text-gray-400">(Local Price)</span>
+                          <span className="text-[12px] font-medium text-gray-400">(Local Price)</span>
                         </p>
                       ) : (
-                        <p className="text-[11px] font-semibold text-red-600 flex items-center gap-1">
+                        <p className="text-[13px] font-semibold text-red-600 flex items-center gap-1">
                           <AlertTriangle size={12} /> No local price set
                         </p>
                       )}
-                      <p className="text-[11px] text-gray-400 truncate">
+                      <p className="text-[13px] text-gray-400 truncate">
                         ₹ {Number(p.basePrice || 0).toLocaleString('en-IN')} (Base Price)
                       </p>
                     </div>

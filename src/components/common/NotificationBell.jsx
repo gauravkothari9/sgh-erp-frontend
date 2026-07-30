@@ -100,7 +100,7 @@ export default function NotificationBell() {
       >
         <Bell size={18} strokeWidth={1.5} />
         {unread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-bold text-white bg-terracotta-500 rounded-full">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[11px] font-bold text-white bg-terracotta-500 rounded-full">
             {unread > 9 ? '9+' : unread}
           </span>
         )}
@@ -113,7 +113,7 @@ export default function NotificationBell() {
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-linen-200 bg-linen-50">
               <span className="text-sm font-bold text-espresso-900">Notifications</span>
               {unread > 0 && (
-                <button onClick={markAll} className="text-[11px] text-brand-600 hover:text-brand-800 flex items-center gap-1">
+                <button onClick={markAll} className="text-[13px] text-brand-600 hover:text-brand-800 flex items-center gap-1">
                   <CheckCheck size={12} /> Mark all read
                 </button>
               )}
@@ -136,12 +136,12 @@ export default function NotificationBell() {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-bold text-gray-900 break-words">{n.title}</p>
                       <p
-                        className="text-[11px] text-gray-500 break-words"
+                        className="text-[13px] text-gray-500 break-words"
                         style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                       >
                         {n.message}
                       </p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">{timeAgo(n.createdAt)}</p>
+                      <p className="text-[12px] text-gray-400 mt-0.5">{timeAgo(n.createdAt)}</p>
                     </div>
                     <span className="w-2 h-2 bg-terracotta-500 rounded-full shrink-0 mt-1" />
                   </button>
@@ -151,7 +151,7 @@ export default function NotificationBell() {
             </div>
             <button
               onClick={() => { setOpen(false); navigate('/notifications'); }}
-              className="w-full px-4 py-2.5 text-[11px] font-semibold text-brand-700 hover:bg-linen-50 border-t border-linen-200"
+              className="w-full px-4 py-2.5 text-[13px] font-semibold text-brand-700 hover:bg-linen-50 border-t border-linen-200"
             >
               View all notifications
             </button>

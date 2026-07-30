@@ -30,7 +30,7 @@ function OutsourceExtra({ card }) {
   };
 
   return (
-    <div className="mt-2 border-t border-linen-200 pt-2 space-y-1 text-[11px] text-gray-600">
+    <div className="mt-2 border-t border-linen-200 pt-2 space-y-1 text-[13px] text-gray-600">
       <div className="flex items-center gap-1 font-semibold text-gray-700 min-w-0">
         <Share2 size={11} className="shrink-0" />
         <span className="truncate">{o.supplierName || 'Supplier not set'}</span>
@@ -50,10 +50,10 @@ function OutsourceExtra({ card }) {
           type="date"
           value={lastCall}
           onChange={(e) => setLastCall(e.target.value)}
-          className="input py-0.5 px-1.5 text-[11px] h-7 w-auto max-w-full min-w-0 flex-1 sm:flex-none"
+          className="input py-0.5 px-1.5 text-[13px] h-7 w-auto max-w-full min-w-0 flex-1 sm:flex-none"
         />
         {dirty && (
-          <button onClick={save} disabled={saving} className="btn-primary btn btn-sm text-[10px] py-0.5 shrink-0">
+          <button onClick={save} disabled={saving} className="btn-primary btn btn-sm text-[12px] py-0.5 shrink-0">
             {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />}
           </button>
         )}
@@ -66,13 +66,16 @@ export default function Outsourced() {
   return (
     <StageView
       title="Outsourced"
-      subtitle="Items being made by external suppliers"
+      subtitle="Items with external suppliers — move them into a Kakani stage when they arrive"
       icon={Share2}
-      filters={{ sourcing: 'Outsourced' }}
-      advance
-      advanceLabel="Advance →"
+      // Only pieces still at the supplier (awaiting sample / just received) show
+      // here. Once moved into a production stage they leave this section and
+      // appear in the matching Kakani stage view.
+      filters={{ sourcing: 'Outsourced', stage: 'Sample Provided,Received' }}
+      // Single "Move" action → pick which Kakani stage the arrived goods go to.
+      moveToStages={['Polish', 'QC', 'Packing', 'Ready for Container']}
       renderExtra={(card) => <OutsourceExtra key={card.itemId} card={card} />}
-      emptyText="No outsourced items."
+      emptyText="No outsourced items awaiting a supplier."
     />
   );
 }

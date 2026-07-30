@@ -57,7 +57,7 @@ export default function InstallPrompt() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-gray-800">Install SGH ERP</p>
-          <p className="text-[11px] text-gray-500">
+          <p className="text-[13px] text-gray-500">
             {showIOSHelp
               ? <>Tap <Share size={11} className="inline -mt-0.5" /> then “Add to Home Screen”.</>
               : 'Run it like an app — full screen, works on the shop floor.'}

@@ -161,20 +161,20 @@ export default function CameraCapture({ onCapture, onClose, multiple = false }) 
               <span className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center">
                 <RotateCcw size={20} />
               </span>
-              <span className="text-[11px]">Retake</span>
+              <span className="text-[13px]">Retake</span>
             </button>
             <button onClick={keep} className="flex flex-col items-center gap-1 text-white">
               <span className="w-16 h-16 rounded-full bg-white text-espresso-900 flex items-center justify-center">
                 <Check size={26} strokeWidth={2.5} />
               </span>
-              <span className="text-[11px]">{multiple ? 'Keep & shoot more' : 'Use photo'}</span>
+              <span className="text-[13px]">{multiple ? 'Keep & shoot more' : 'Use photo'}</span>
             </button>
             {multiple && (
               <button onClick={done} className="flex flex-col items-center gap-1 text-white/80">
                 <span className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-sm font-bold">
                   {shots.length + 1}
                 </span>
-                <span className="text-[11px]">Done</span>
+                <span className="text-[13px]">Done</span>
               </button>
             )}
           </>
@@ -195,7 +195,7 @@ export default function CameraCapture({ onCapture, onClose, multiple = false }) 
                 <span className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-sm font-bold">
                   {shots.length}
                 </span>
-                <span className="text-[11px]">Done</span>
+                <span className="text-[13px]">Done</span>
               </button>
             )}
           </>

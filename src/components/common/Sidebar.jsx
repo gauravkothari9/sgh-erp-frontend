@@ -33,7 +33,7 @@ const NavItem = ({ to, icon: Icon, label, badge, onNavigate }) => (
     <Icon size={17} strokeWidth={1.5} />
     <span className="flex-1">{label}</span>
     {badge && (
-      <span className="text-[10px] bg-terracotta-100 text-terracotta-800 px-2 py-0.5 rounded-none font-medium uppercase tracking-wider">
+      <span className="text-[12px] bg-terracotta-100 text-terracotta-800 px-2 py-0.5 rounded-none font-medium uppercase tracking-wider">
         {badge}
       </span>
     )}
@@ -45,7 +45,7 @@ const Section = ({ title, items, onNavigate }) => {
   return (
     <>
       <div className="section-divider" />
-      <p className="text-[10px] font-medium text-espresso-400 uppercase tracking-widest px-4 mb-2">
+      <p className="text-[12px] font-medium text-espresso-400 uppercase tracking-widest px-4 mb-2">
         {title}
       </p>
       {items.map((item) => (
@@ -96,7 +96,7 @@ export default function Sidebar({ onClose }) {
   const kakaniItems = [
     { to: '/branches/kakani/orders', icon: ShoppingBag, label: 'Orders', module: 'kakani' },
     { to: '/branches/kakani/orders-in-transit', icon: Truck, label: 'Orders In-Transit', module: 'kakani' },
-    { to: '/branches/kakani/repairing', icon: Wrench, label: 'Repairing / Manufacturing', module: 'kakani' },
+    { to: '/branches/kakani/repairing', icon: Wrench, label: 'Manufacturing', module: 'kakani' },
     { to: '/branches/kakani/polish', icon: Sparkles, label: 'Polish', module: 'kakani' },
     { to: '/branches/kakani/qc', icon: ClipboardCheck, label: 'QC', module: 'kakani' },
     { to: '/branches/kakani/packing', icon: Package, label: 'Packing', module: 'kakani' },
@@ -142,7 +142,7 @@ export default function Sidebar({ onClose }) {
           </div>
           <div>
             <p className="font-serif font-bold text-espresso-900 text-lg leading-tight tracking-tight">SGH ERP</p>
-            <p className="text-[10px] text-espresso-500 uppercase tracking-widest leading-tight mt-1">SGH Crafts</p>
+            <p className="text-[12px] text-espresso-500 uppercase tracking-widest leading-tight mt-1">SGH Crafts</p>
           </div>
         </div>
       </div>

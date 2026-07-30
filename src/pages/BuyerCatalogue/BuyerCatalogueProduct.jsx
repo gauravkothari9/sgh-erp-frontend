@@ -30,7 +30,7 @@ const Field = ({ label, value, mono = false, children }) => {
   if (!hasValue && !hasChildren) return null;
   return (
     <div className="text-center flex flex-col items-center">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">
+      <p className="text-[12px] font-semibold uppercase tracking-wider text-gray-400 mb-1">
         {label}
       </p>
       <div className={`text-sm text-gray-800 ${mono ? 'font-mono' : ''}`}>
@@ -172,7 +172,7 @@ export default function BuyerCatalogueProduct() {
           <div className="flex items-center justify-center gap-2 flex-wrap">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 font-mono break-all">{product.sku}</h1>
             {product.itemCondition && (
-              <span className="text-[11px] font-bold bg-brand-50 text-brand-700 border border-brand-200 px-2 py-0.5 rounded">
+              <span className="text-[13px] font-bold bg-brand-50 text-brand-700 border border-brand-200 px-2 py-0.5 rounded">
                 {product.itemCondition}
               </span>
             )}
@@ -244,7 +244,7 @@ export default function BuyerCatalogueProduct() {
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
                     {img === primary && (
-                      <span className="absolute text-[8px] font-bold text-amber-500">★</span>
+                      <span className="absolute text-[10px] font-bold text-amber-500">★</span>
                     )}
                   </button>
                 ))}
@@ -254,7 +254,7 @@ export default function BuyerCatalogueProduct() {
 
           {/* Current price card */}
           <div className="card p-5 bg-gradient-to-br from-brand-50 to-white border-brand-200 text-center">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-600 mb-1">
+            <p className="text-[12px] font-semibold uppercase tracking-wider text-brand-600 mb-1">
               Current Price
             </p>
             <p className="text-3xl font-bold text-brand-700">
@@ -430,7 +430,7 @@ export default function BuyerCatalogueProduct() {
                       className="bg-brand-50/50 border border-brand-100 rounded-lg p-3 text-sm text-center"
                     >
                       {author && (
-                        <p className="text-[11px] font-semibold text-brand-700 mb-1">{author}</p>
+                        <p className="text-[13px] font-semibold text-brand-700 mb-1">{author}</p>
                       )}
                       {text && <p className="text-gray-700 whitespace-pre-wrap">{text}</p>}
                       {cmtImages.length > 0 && (
@@ -501,7 +501,7 @@ export default function BuyerCatalogueProduct() {
               <p className="text-sm text-gray-400 text-center py-6">No history recorded yet.</p>
             ) : (
               <div className="border border-gray-100 rounded-lg overflow-hidden">
-                <div className="bg-gray-50 grid grid-cols-4 gap-2 sm:gap-3 px-3 sm:px-4 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider text-center">
+                <div className="bg-gray-50 grid grid-cols-4 gap-2 sm:gap-3 px-3 sm:px-4 py-2 text-[12px] font-semibold text-gray-500 uppercase tracking-wider text-center">
                   <div>Date</div>
                   <div>Order #</div>
                   <div>Qty</div>
@@ -519,7 +519,7 @@ export default function BuyerCatalogueProduct() {
                         <Calendar size={12} className="text-gray-400 shrink-0" />
                         {formatDate(h.date)}
                         {idx === 0 && (
-                          <span className="text-[9px] font-bold bg-brand-600 text-white px-1.5 rounded">
+                          <span className="text-[11px] font-bold bg-brand-600 text-white px-1.5 rounded">
                             LATEST
                           </span>
                         )}

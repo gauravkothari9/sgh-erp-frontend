@@ -56,7 +56,7 @@ export default function SalesReportPage() {
       <div className="bg-brand-surface border border-brand-border rounded-xl overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-brand-bg">
-            <tr className="text-left text-[10px] uppercase tracking-wider text-brand-inkMuted">
+            <tr className="text-left text-[12px] uppercase tracking-wider text-brand-inkMuted">
               <th className="px-3 py-2">Sale #</th>
               <th className="px-3 py-2">Date</th>
               <th className="px-3 py-2">Piece</th>
@@ -92,7 +92,7 @@ export default function SalesReportPage() {
 function Tot({ label, value }) {
   return (
     <div className="bg-brand-surface border border-brand-border rounded-xl p-3">
-      <p className="text-[10px] uppercase tracking-wider text-brand-inkMuted">{label}</p>
+      <p className="text-[12px] uppercase tracking-wider text-brand-inkMuted">{label}</p>
       <p className="text-lg font-bold tabular-nums">{value}</p>
     </div>
   );
