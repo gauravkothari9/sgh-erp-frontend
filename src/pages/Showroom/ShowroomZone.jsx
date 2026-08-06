@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Store, Plus, Loader2, Save, Trash2, ImagePlus, Package, Check, X, Pencil, ArrowLeftRight, Globe,
-  AlertTriangle,
+  AlertTriangle, RotateCcw, RotateCw,
 } from 'lucide-react';
 import { showroomAPI } from '../../utils/api';
 import { useAuthStore } from '../../store/authStore';
@@ -85,7 +85,42 @@ function StockRows({ rows, onChange }) {
 }
 
 // Create + edit form for a showroom product. `product` null → create mode.
-export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSaved }) {
+// Rotate-in-place controls for a product's SAVED photo. This turns the actual
+// pixels on the server and keeps the same URL, so the fix shows up wherever
+// this product's image is used — showroom cards, order galleries, the public
+// e-commerce catalogue API — without touching any of those separately. Only
+// meaningful once the product has a saved image; there's nothing on the
+// server to rotate before the first save.
+function RotateButtons({ productId, onRotated, className = '' }) {
+  const [busy, setBusy] = useState(null); // 'cw' | 'ccw' | null
+  const rotate = async (direction) => {
+    setBusy(direction);
+    try {
+      const res = await showroomAPI.rotateImage(productId, direction);
+      onRotated?.(res.data?.data?.product);
+    } catch { /* toasted by the axios interceptor */ } finally { setBusy(null); }
+  };
+  const Btn = ({ direction, Icon, title }) => (
+    <button
+      type="button"
+      onClick={() => rotate(direction)}
+      onPointerDown={(e) => e.stopPropagation()}
+      disabled={!!busy}
+      title={title}
+      className="w-7 h-7 rounded-lg bg-white/90 border border-gray-300 text-gray-500 hover:text-brand-700 hover:border-brand-400 flex items-center justify-center disabled:opacity-50"
+    >
+      {busy === direction ? <Loader2 size={13} className="animate-spin" /> : <Icon size={13} />}
+    </button>
+  );
+  return (
+    <div className={`flex items-center gap-1 ${className}`}>
+      <Btn direction="ccw" Icon={RotateCcw} title="Rotate left" />
+      <Btn direction="cw" Icon={RotateCw} title="Rotate right" />
+    </div>
+  );
+}
+
+export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSaved, onRotated }) {
   const isEdit = !!product;
   const [sku, setSku] = useState('');
   const [name, setName] = useState('');
@@ -138,6 +173,15 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
   };
 
   const dropImage = () => { setFile(null); setPreview(''); setRemoveImage(true); };
+
+  // Rotation acts on the SAVED photo on the server, so it only applies once
+  // there is one — not to a just-picked file still waiting on "Save changes".
+  const canRotate = isEdit && !!product?.image && !file;
+  const handleRotated = (updated) => {
+    if (!updated) return;
+    setPreview(resolveMediaSrc(updated.image));
+    onRotated?.(updated);
+  };
 
   const save = async () => {
     if (!name.trim()) { toast.error('Product name is required'); return; }
@@ -219,6 +263,12 @@ export function ProductFormModal({ isOpen, onClose, branch, zone, product, onSav
             >
               <X size={14} />
             </button>
+          )}
+          {canRotate && (
+            <RotateButtons productId={product._id} onRotated={handleRotated} className="absolute top-2 left-2" />
+          )}
+          {!canRotate && isEdit && file && (
+            <p className="text-[12px] text-gray-400 mt-1">Save this photo first, then you can rotate it.</p>
           )}
         </div>
 
@@ -389,7 +439,7 @@ function TransferModal({ isOpen, onClose, product, branch, zone, onMoved }) {
 }
 
 // Read-only product view — what a plain click (short press) opens.
-function ViewProductModal({ product, branch, zone, isOpen, onClose, selected, onToggleSelect }) {
+function ViewProductModal({ product, branch, zone, isOpen, onClose, selected, onToggleSelect, canUpdate, onRotated }) {
   if (!product) return null;
   return (
     <Modal
@@ -407,10 +457,13 @@ function ViewProductModal({ product, branch, zone, isOpen, onClose, selected, on
       }
     >
       <div className="space-y-4">
-        <div className="rounded-xl bg-linen-100 border border-linen-300 flex items-center justify-center overflow-hidden p-2 min-h-[220px]">
+        <div className="relative rounded-xl bg-linen-100 border border-linen-300 flex items-center justify-center overflow-hidden p-2 min-h-[220px]">
           {product.image ? (
             <img src={resolveMediaSrc(product.image)} onError={imgErrorFallback} alt={product.name} className="max-h-[340px] w-full object-contain" />
           ) : <Package size={40} className="text-gray-300" />}
+          {canUpdate && product.image && (
+            <RotateButtons productId={product._id} onRotated={onRotated} className="absolute top-2 right-2" />
+          )}
         </div>
         <dl className="grid grid-cols-2 gap-3 text-sm">
           <div>
@@ -548,6 +601,15 @@ export default function ShowroomZone({ branch, zone }) {
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
+  // The rotated image is already saved server-side by the time this fires —
+  // just get the grid card and (if open) the view modal to show it without a
+  // full refetch or closing anything.
+  const handleProductRotated = (updated) => {
+    if (!updated) return;
+    setProducts((list) => list.map((p) => (p._id === updated._id ? { ...p, image: updated.image } : p)));
+    setViewTarget((v) => (v && v._id === updated._id ? { ...v, image: updated.image } : v));
+  };
+
   const doDelete = async () => {
     try {
       await showroomAPI.remove(deleteTarget._id);
@@ -665,7 +727,10 @@ export default function ShowroomZone({ branch, zone }) {
                       src={resolveMediaSrc(p.image)}
                       onError={imgErrorFallback}
                       alt={p.name}
-                      className={`w-full h-full object-cover transition ${here === 0 ? 'grayscale opacity-60' : ''}`}
+                      // Greyed out only when the product is gone from EVERY
+                      // zone — an empty zone with stock elsewhere is still a
+                      // product you can sell.
+                      className={`w-full h-full object-cover transition ${total === 0 ? 'grayscale opacity-60' : ''}`}
                     />
                   ) : <Package size={28} className="text-gray-300" />}
                 </div>
@@ -680,12 +745,22 @@ export default function ShowroomZone({ branch, zone }) {
                   )}
                   <p className="font-bold text-gray-800 text-sm truncate" title={p.name}>{p.name}</p>
                   <p className="text-xs text-gray-500 truncate">{productSizeLabel(p) || '—'}</p>
-                  {here === 0 ? (
+                  {/* "Out of stock" means the product is finished — nothing
+                      left in ANY zone of either showroom. A zone that has run
+                      empty while other zones still hold stock is a different
+                      thing, and says so instead of reading as sold out. */}
+                  {total === 0 ? (
                     <p className="mt-0.5" title={stockSummary(p)}>
                       <span className="inline-block px-1.5 py-0.5 rounded text-[12px] font-bold uppercase tracking-wide bg-red-100 text-red-700">
                         Out of stock
                       </span>
-                      {total > 0 && <span className="text-[13px] text-gray-400"> · {total} in other zones</span>}
+                    </p>
+                  ) : here === 0 ? (
+                    <p className="mt-0.5" title={stockSummary(p)}>
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[12px] font-bold uppercase tracking-wide bg-amber-100 text-amber-800">
+                        None in this zone
+                      </span>
+                      <span className="text-[13px] text-gray-500"> · <strong className="text-gray-800">{total}</strong> in other zones</span>
                     </p>
                   ) : (
                     <p className="text-[13px] text-gray-500 mt-0.5" title={stockSummary(p)}>
@@ -742,6 +817,7 @@ export default function ShowroomZone({ branch, zone }) {
         zone={zone}
         onClose={() => setFormTarget(null)}
         onSaved={fetchProducts}
+        onRotated={handleProductRotated}
       />
 
       <TransferModal
@@ -761,6 +837,8 @@ export default function ShowroomZone({ branch, zone }) {
         selected={!!(viewTarget && selectedItems[viewTarget._id])}
         onToggleSelect={(p) => pickFor(p)}
         onClose={() => setViewTarget(null)}
+        canUpdate={canUpdate}
+        onRotated={handleProductRotated}
       />
 
       <ConfirmDialog

@@ -335,6 +335,7 @@ export default function ShowroomCollections() {
         zone={editTarget ? primaryLocation(editTarget).zone : ''}
         onClose={() => setEditTarget(null)}
         onSaved={() => { fetchProducts(); fetchCollections(); }}
+        onRotated={() => fetchProducts()}
       />
 
       <SelectionModeModal

@@ -184,6 +184,9 @@ export const showroomAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
   transfer: (id, data) => api.patch(`/showroom/products/${id}/transfer`, data),
+  // Rotate the saved photo 90° — direction: 'cw' | 'ccw'. Turns the actual
+  // pixels and keeps the same URL, so it shows rotated everywhere at once.
+  rotateImage: (id, direction) => api.patch(`/showroom/products/${id}/rotate-image`, { direction }),
   consume: (data) => api.post('/showroom/products/consume', data),
   remove: (id) => api.delete(`/showroom/products/${id}`),
 };
